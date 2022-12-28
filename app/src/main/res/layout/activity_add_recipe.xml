@@ -1,16 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    tools:context=".AddRecipe">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Recipient"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:text="Name of the recipe"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-</RelativeLayout>
+    <EditText
+        android:id="@+id/recipeName"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:textStyle="italic" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Link to the recipe"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/recipeLink"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Link"
+        android:textStyle="italic" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#1ec2d4"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="Ingredient"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Quantity"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/Unit"
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Unit"
+            android:textColor="#fff"
+            android:textSize="20sp" />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="20dp">
+
+    </ListView>
+
+
+</LinearLayout>
