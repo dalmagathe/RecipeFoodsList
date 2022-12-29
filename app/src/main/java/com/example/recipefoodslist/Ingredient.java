@@ -3,7 +3,7 @@ package com.example.recipefoodslist;
 public class Ingredient {
 
     private String ingredient;
-    private int qty;
+    private String qty;
     private String unit;
 
     public String getIngredient() {
@@ -14,11 +14,11 @@ public class Ingredient {
         this.ingredient = ingredient;
     }
 
-    public int getQty() {
+    public String getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(String qty) {
         this.qty = qty;
     }
 

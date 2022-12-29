@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">RecipeFoodsList</string>
+
+    <string-array name="unit">
+        <item>gr</item>
+        <item>ml</item>
+        <item>st</item>
+        <item>Ø</item>
+    </string-array>
 </resources>

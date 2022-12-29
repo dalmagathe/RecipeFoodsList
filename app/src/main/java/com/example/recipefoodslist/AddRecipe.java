@@ -5,24 +5,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class AddRecipe extends AppCompatActivity {
+public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private String[] Ingredient = new String[]{"Tomate", ""};
-    private int[] Qty = new int[]{500, 0};
+    private String[] Qty = new String[]{"500", "0"};
     private String[] Unit = new String[]{"gr", ""};
     private ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>(); //arrayList
     private ListView listView; //lv
     private IngredientAdapter ingredientAdapter;
     private int ingredientNB = 0;
 
-    EditText et;
+    EditText etIngredientName;
+    EditText etIngredientQuantity;
+    Spinner etIngredientUnit;
     Button bt;
 
     @Override
@@ -30,7 +36,15 @@ public class AddRecipe extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_recipe);
 
-        et = (EditText) findViewById(R.id.ingredientName);
+        Spinner spinner = findViewById(R.id.spinnerUnit);
+        ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.unit, android.R.layout.simple_spinner_item);
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapterSpinner);
+        spinner.setOnItemSelectedListener(this);
+
+        etIngredientName = (EditText) findViewById(R.id.ingredientName);
+        etIngredientQuantity = (EditText) findViewById(R.id.ingredientQuantity);
+        etIngredientUnit = (Spinner) findViewById(R.id.spinnerUnit);
         bt = (Button) findViewById(R.id.addIngredientBtn);
         listView = findViewById(R.id.listView);
 
@@ -49,9 +63,9 @@ public class AddRecipe extends AppCompatActivity {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Ingredient[1] = et.getText().toString();
-                Qty[1] = 3;
-                Unit[1] = "l";
+                Ingredient[1] = etIngredientName.getText().toString();
+                Qty[1] = etIngredientQuantity.getText().toString();
+                Unit[1] = etIngredientUnit.getSelectedItem().toString();
                 populateList(ingredientArrayList);
                 ingredientAdapter.notifyDataSetChanged();
             }
@@ -64,5 +78,16 @@ public class AddRecipe extends AppCompatActivity {
         ingredientModel.setQty(Qty[ingredientNB]);
         ingredientModel.setUnit(Unit[ingredientNB]);
         ingredientArrayList.add(ingredientModel);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
+        String text = parent.getItemAtPosition(position).toString();
+        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }
