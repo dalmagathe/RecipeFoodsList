@@ -2,7 +2,9 @@ package com.example.recipefoodslist;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextPaint;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,8 +15,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import com.example.recipefoodslist.WriteDataJson;
+
+import org.json.JSONException;
 
 public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -54,6 +63,17 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         ingredientAdapter = new IngredientAdapter(AddRecipe.this,ingredientArrayList);
         listView.setAdapter(ingredientAdapter);
 
+        try {
+            WriteDataJson.main(getExternalFilesDir(null).toString(), "Tomate");
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+
+
         onBtnClick();
 
     }
@@ -68,6 +88,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
                 Unit[1] = etIngredientUnit.getSelectedItem().toString();
                 populateList(ingredientArrayList);
                 ingredientAdapter.notifyDataSetChanged();
+
             }
         });
     }
