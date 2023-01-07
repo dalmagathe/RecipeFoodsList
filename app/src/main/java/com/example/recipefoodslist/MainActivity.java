@@ -9,6 +9,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     private Button OpenRecipeActivity;
+    private Button OpenGroceryActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +23,23 @@ public class MainActivity extends AppCompatActivity {
                 OpenRecipeActivityFct();
             }
         });
+
+        OpenGroceryActivity = (Button) findViewById(R.id.ShoppingBtn);
+        OpenGroceryActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OpenGroceryActivityFct();
+            }
+        });
     }
 
     public void OpenRecipeActivityFct(){
         Intent intent = new Intent(this, AddRecipe.class);
+        startActivity(intent);
+    }
+
+    public void OpenGroceryActivityFct(){
+        Intent intent = new Intent(this, GroceryList.class);
         startActivity(intent);
     }
 }
