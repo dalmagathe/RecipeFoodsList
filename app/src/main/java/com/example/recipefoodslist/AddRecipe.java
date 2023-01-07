@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Editable;
 import android.text.TextPaint;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,6 +38,8 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     private ListView listView; //lv
     private IngredientAdapter ingredientAdapter;
     private int ingredientNB = 0;
+
+    String previousRecipe = "";
 
     EditText etRecipeName;
     EditText etIngredientName;
@@ -71,6 +75,27 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     }
 
     public void onBtnClick(){
+        etRecipeName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                listView.setAdapter(null);
+                Ingredient.clear();
+                Qty.clear();
+                Unit.clear();
+                ingredientArrayList.clear();
+                ingredientNB=0;
+            }
+        });
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,6 +110,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
                     writeIntoJSON(etRecipeName.getText().toString(), Ingredient.get(listSize), Qty.get(listSize), Unit.get(listSize));
                     ++ingredientNB;
+                    previousRecipe = etRecipeName.getText().toString();
                 }
             }
         });
