@@ -15,6 +15,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +41,10 @@ public class RecipesList extends AppCompatActivity {
             public void onClick(View view) {
                 try {
                     getIngredientQuantity(selectedRecipeList);
+                    WriteDataJson.saveRecipesSelectedJSON(selectedRecipeList, getExternalFilesDir(null).toString());
                 } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
                 OpenIngredientsListFct();
@@ -108,4 +112,5 @@ public class RecipesList extends AppCompatActivity {
         Intent intent = new Intent(this, ShoppingIngredientList.class);
         startActivity(intent);
     }
+
 }

@@ -46,8 +46,7 @@ public class ReadDataJson {
 
     private static JSONObject parsingJSON(File f, String data) throws JSONException, IOException {
         JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
-        //JSONObject recipeObj = jsonObject.getJSONObject("PateCarbo");         Get a recipe
-        //JSONArray ingredientObj = recipeObj.getJSONArray("Ingredients");      Get the ingredients
-        return jsonObject;
+        JSONObject allRecipesInput = jsonObject.getJSONObject("Recipes input");
+        return allRecipesInput;
     }
 }

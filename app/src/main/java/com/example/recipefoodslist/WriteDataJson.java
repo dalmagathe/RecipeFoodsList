@@ -66,6 +66,7 @@ public class WriteDataJson {
 
     private static JSONObject parsingJSON(File f, String data) throws JSONException, IOException {
         JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
+        //JSONObject allRecipesInput = jsonObject.getJSONObject("Recipes input");
         //JSONObject recipeObj = jsonObject.getJSONObject("PateCarbo");         Get a recipe
         //JSONArray ingredientObj = recipeObj.getJSONArray("Ingredients");      Get the ingredients
         return jsonObject;
@@ -75,7 +76,7 @@ public class WriteDataJson {
         JSONArray testArray = new JSONArray();
 
         JSONObject objNewIngredient = new JSONObject();
-        objNewIngredient.put("Name", Recipe);
+        objNewIngredient.put("Name", Ingredient);
         objNewIngredient.put("Quantity", Qty);
         objNewIngredient.put("Unit", Unit);
         testArray.put(objNewIngredient);
@@ -86,39 +87,75 @@ public class WriteDataJson {
         JSONObject objAllRecipe = new JSONObject();
         objAllRecipe.put(Recipe, objAllIngredient);
 
-        return objAllRecipe;
+        JSONObject objRecipe = new JSONObject();
+        objRecipe.put("Recipes input", objAllRecipe);
+
+        return objRecipe;
     }
 
     private static void writeNewJSONData(File f, JSONObject jsonObject, String Recipe, String Ingredient, String Qty, String Unit) throws JSONException, IOException {
-        if(!(jsonObject.has(Recipe))){
-            JSONArray testArray = new JSONArray();
-
-            JSONObject objNewIngredient = new JSONObject();
-            objNewIngredient.put("Name", Recipe);
-            objNewIngredient.put("Quantity", Qty);
-            objNewIngredient.put("Unit", Unit);
-            testArray.put(objNewIngredient);
-
-            JSONObject objAllIngredient = new JSONObject();
-            objAllIngredient.put("Ingredients", testArray);
-
-            jsonObject.put(Recipe, objAllIngredient);
-        }
-        else{
-            JSONObject recipeObj = jsonObject.getJSONObject(Recipe);
+        JSONObject allRecipeObj = jsonObject.getJSONObject("Recipes input");
+        if(!(allRecipeObj.has(Recipe))){
 
             JSONObject objNewIngredient = new JSONObject();
             objNewIngredient.put("Name", Ingredient);
             objNewIngredient.put("Quantity", Qty);
             objNewIngredient.put("Unit", Unit);
 
-            JSONArray newIngredientInArray = recipeObj.getJSONArray("Ingredients");
-            newIngredientInArray.put(objNewIngredient);
+            JSONArray testArray = new JSONArray();
+            testArray.put(objNewIngredient);
+
+            JSONObject objAllIngredient = new JSONObject();
+            objAllIngredient.put("Ingredients", testArray);
+
+            allRecipeObj.put(Recipe, objAllIngredient);
+        }
+        else{
+            JSONObject objNewIngredient = new JSONObject();
+            objNewIngredient.put("Name", Ingredient);
+            objNewIngredient.put("Quantity", Qty);
+            objNewIngredient.put("Unit", Unit);
+
+            allRecipeObj.getJSONObject(Recipe).getJSONArray("Ingredients").put(objNewIngredient);
         }
 
         FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
         file.write(jsonObject.toString(2));
         file.flush();
         file.close();
+    }
+
+    static public void saveRecipesSelectedJSON(List<String> selectedRecipeList, String path) throws JSONException, IOException {
+
+        String data = "";
+
+        try{
+            File f = new File(path + "/newTestFile.json");
+
+            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+
+            while ((line = bufferedReader.readLine())!= null){
+                data = data + line;
+            }
+
+            if(!data.isEmpty()){
+                JSONObject jsonObject = parsingJSON(f, data);
+                JSONArray jsonArray = new JSONArray();
+                jsonArray.put(selectedRecipeList);
+                jsonObject.put("Recipes selected", jsonArray);
+
+                f = new File(path + "/newTestFile.json");
+                FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
+                file.write(jsonObject.toString(2));
+                file.flush();
+                file.close();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 }
