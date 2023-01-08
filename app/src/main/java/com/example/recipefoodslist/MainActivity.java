@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void OpenGroceryActivityFct(){
-        Intent intent = new Intent(this, GroceryList.class);
+        Intent intent = new Intent(this, RecipesList.class);
         startActivity(intent);
     }
 }
