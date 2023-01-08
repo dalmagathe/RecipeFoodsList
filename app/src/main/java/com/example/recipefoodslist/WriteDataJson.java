@@ -142,8 +142,12 @@ public class WriteDataJson {
 
             if(!data.isEmpty()){
                 JSONObject jsonObject = parsingJSON(f, data);
+
                 JSONArray jsonArray = new JSONArray();
-                jsonArray.put(selectedRecipeList);
+                for (int i=0; i < selectedRecipeList.size(); i++) {
+                    jsonArray.put(selectedRecipeList.get(i));
+                }
+
                 jsonObject.put("Recipes selected", jsonArray);
 
                 f = new File(path + "/newTestFile.json");

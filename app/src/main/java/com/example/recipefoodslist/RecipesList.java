@@ -1,5 +1,7 @@
 package com.example.recipefoodslist;
 
+import static com.example.recipefoodslist.ReadDataJson.getRecipesSelected;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -60,16 +62,32 @@ public class RecipesList extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, recipe);
         lvAllRecipe.setAdapter(adapter);
 
+        List<String> recipesSelectedList = null;
+        try {
+            recipesSelectedList = getRecipesSelected(String.valueOf(getExternalFilesDir(null)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < recipesSelectedList.size(); ++i) {
+            for (int j = 0; j < lvAllRecipe.getAdapter().getCount(); ++j) {
+                if ((String.valueOf((lvAllRecipe.getItemAtPosition(i)))).equals(recipesSelectedList.get(i))) {
+                    lvAllRecipe.setItemChecked(j, true);
+                }
+
+            }
+
+        }
+        //lvAllRecipe.setItemChecked(0, true);
         lvAllRecipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //String selectedFromList = (String) (lvAllRecipe.getItemAtPosition(i));
-                if(selectedRecipeList.contains(String.valueOf((lvAllRecipe.getItemAtPosition(i))))){
+                if (selectedRecipeList.contains(String.valueOf((lvAllRecipe.getItemAtPosition(i))))) {
                     selectedRecipeList.remove(lvAllRecipe.getItemAtPosition(i));
                     ShoppingIngredientList.ingredientNameQty.clear();
                     ingredientQuantity.clear();
-                }
-                else{
+                } else {
                     selectedRecipeList.add(String.valueOf(lvAllRecipe.getItemAtPosition(i)));
                 }
             }
@@ -111,6 +129,10 @@ public class RecipesList extends AppCompatActivity {
     public void OpenIngredientsListFct(){
         Intent intent = new Intent(this, ShoppingIngredientList.class);
         startActivity(intent);
+    }
+
+    public void setIemSelected(){
+
     }
 
 }
