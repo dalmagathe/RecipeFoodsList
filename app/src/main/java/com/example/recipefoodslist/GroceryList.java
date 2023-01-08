@@ -10,18 +10,22 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class GroceryList extends AppCompatActivity {
     ListView lvAllRecipe;
     List<String> recipe = new Vector<String>();
     JSONObject jsonObject = new JSONObject();
+    Map<String, Integer> ingredientQuantity = new HashMap<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,7 +44,12 @@ public class GroceryList extends AppCompatActivity {
         lvAllRecipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int index = i;
+                String selectedFromList = (String) (lvAllRecipe.getItemAtPosition(i));
+                try {
+                    getIngredientQuantity(selectedFromList);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -51,6 +60,20 @@ public class GroceryList extends AppCompatActivity {
         while (keys.hasNext()){
             String key = keys.next();
             recipe.add(key);
+        }
+    }
+
+    private void getIngredientQuantity(String recipe) throws JSONException {
+        jsonObject = ReadDataJson.main(getExternalFilesDir(null).toString());
+        JSONObject recipeObj = jsonObject.getJSONObject(recipe);         //Get a recipe
+        JSONArray ingredientObj = recipeObj.getJSONArray("Ingredients");      //Get the ingredients
+        int size = ingredientObj.length();
+        while (size != 0){
+            JSONObject getFirstIngredient = ingredientObj.getJSONObject(size-1);
+            String getNameIngredient = getFirstIngredient.getString("Name");
+            int getQuantityIngredient = Integer.valueOf(getFirstIngredient.getString("Quantity"));
+            ingredientQuantity.put(getNameIngredient, getQuantityIngredient);
+            --size;
         }
     }
 }
