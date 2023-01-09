@@ -71,7 +71,9 @@ public class RecipesList extends AppCompatActivity {
 
         for (int i = 0; i < recipesSelectedList.size(); ++i) {
             for (int j = 0; j < lvAllRecipe.getAdapter().getCount(); ++j) {
-                if ((String.valueOf((lvAllRecipe.getItemAtPosition(i)))).equals(recipesSelectedList.get(i))) {
+                String one = String.valueOf((lvAllRecipe.getItemAtPosition(j)));
+                String two = recipesSelectedList.get(i);
+                if ((one).equals(two)) {
                     lvAllRecipe.setItemChecked(j, true);
                 }
 
@@ -90,10 +92,11 @@ public class RecipesList extends AppCompatActivity {
                 } else {
                     selectedRecipeList.add(String.valueOf(lvAllRecipe.getItemAtPosition(i)));
                 }
+
+
             }
-
-
         });
+
     }
 
     private void updateRecipeList() throws JSONException {
