@@ -16,7 +16,8 @@ import java.util.List;
 import java.util.Vector;
 
 public class ReadDataJson {
-    public static JSONObject main(String path){
+
+    public static JSONObject getAllJsonObj(String path){
         String data ="";
         JSONObject jsonObject = new JSONObject();
 
@@ -36,7 +37,7 @@ public class ReadDataJson {
                 }
 
                 if(!data.isEmpty()){
-                    jsonObject = parsingJSON(f, data);
+                    jsonObject = new JSONObject(data);
                 }
             }
 
@@ -54,38 +55,21 @@ public class ReadDataJson {
         return allRecipesInput;
     }
 
-    static public List<String> getRecipesSelected(String path) throws JSONException {
-        String data ="";
+    public static JSONObject getRecipesInput(String path) throws JSONException {
+        JSONObject jsonObject = getAllJsonObj(path);
+        JSONObject allRecipesInput = jsonObject.getJSONObject("Recipes input");
+        return allRecipesInput;
+    }
+
+    public static List<String> getRecipesSelected(String path) throws JSONException {
+        JSONObject jsonObject = getAllJsonObj(path);
+        JSONArray jsonArray = jsonObject.getJSONArray("Recipes selected");
         List<String> recipesSelected = new Vector<>();
-
-        try{
-            File f = new File(path + "/newTestFile.json");
-
-            if(!(f.exists())){
-
-            }
-            else{
-                InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                String line;
-
-                while ((line = bufferedReader.readLine())!= null){
-                    data = data + line;
-                }
-
-                if(!data.isEmpty()){
-                    JSONObject jsonObject = new JSONObject(data);
-                    JSONArray jsonArray = jsonObject.getJSONArray("Recipes selected");
-                    for (int i=0; i < jsonArray.length(); i++) {
-                        recipesSelected.add((String) jsonArray.get(i));
-                    }
-                }
-            }
-
+        for (int i=0; i < jsonArray.length(); i++) {
+            recipesSelected.add((String) jsonArray.get(i));
         }
-        catch (Exception e){
-            e.printStackTrace();
-        }
+
         return recipesSelected;
     }
+
 }

@@ -1,7 +1,5 @@
 package com.example.recipefoodslist;
 
-import static com.example.recipefoodslist.ReadDataJson.getRecipesSelected;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -37,54 +35,24 @@ public class RecipesList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_shopping);
 
-        OpenIngredientsListActivity = (Button) findViewById(R.id.openIngredientListActivity);
-        OpenIngredientsListActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    getIngredientQuantity(selectedRecipeList);
-                    WriteDataJson.saveRecipesSelectedJSON(selectedRecipeList, getExternalFilesDir(null).toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                OpenIngredientsListFct();
-            }
-        });
-
+        //Upload the recipes
         try {
             updateRecipeList();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        //Display the recipes from the JSON
         lvAllRecipe = findViewById(R.id.allRecipeView);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, recipe);
         lvAllRecipe.setAdapter(adapter);
 
-        List<String> recipesSelectedList = null;
-        try {
-            recipesSelectedList = getRecipesSelected(String.valueOf(getExternalFilesDir(null)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        //Check the selected recipes from the JSON in the listVIew
+        checkRecipesSelectedFromJson();
 
-        for (int i = 0; i < recipesSelectedList.size(); ++i) {
-            for (int j = 0; j < lvAllRecipe.getAdapter().getCount(); ++j) {
-                String one = String.valueOf((lvAllRecipe.getItemAtPosition(j)));
-                String two = recipesSelectedList.get(i);
-                if ((one).equals(two)) {
-                    lvAllRecipe.setItemChecked(j, true);
-                }
-
-            }
-
-        }
-        //lvAllRecipe.setItemChecked(0, true);
+        //Get recipes selected from the user
         lvAllRecipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //String selectedFromList = (String) (lvAllRecipe.getItemAtPosition(i));
                 if (selectedRecipeList.contains(String.valueOf((lvAllRecipe.getItemAtPosition(i))))) {
                     selectedRecipeList.remove(lvAllRecipe.getItemAtPosition(i));
                     ShoppingIngredientList.ingredientNameQty.clear();
@@ -92,15 +60,29 @@ public class RecipesList extends AppCompatActivity {
                 } else {
                     selectedRecipeList.add(String.valueOf(lvAllRecipe.getItemAtPosition(i)));
                 }
-
-
             }
         });
 
+        //Open an activity with the list of ingredients
+        OpenIngredientsListActivity = (Button) findViewById(R.id.openIngredientListActivity);
+        OpenIngredientsListActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    getIngredientQuantity(selectedRecipeList); //Update the recipes selected byt the user
+                    WriteDataJson.saveRecipesSelectedJSON(selectedRecipeList, getExternalFilesDir(null).toString()); //Save the selected recipes into the JSON
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                openIngredientsListFct(); //Open the Ingredients list activity
+            }
+        });
     }
 
     private void updateRecipeList() throws JSONException {
-        jsonObject = ReadDataJson.main(getExternalFilesDir(null).toString());
+        jsonObject = ReadDataJson.getRecipesInput(getExternalFilesDir(null).toString());
         Iterator<String> keys = jsonObject.keys();
         while (keys.hasNext()){
             String key = keys.next();
@@ -109,14 +91,14 @@ public class RecipesList extends AppCompatActivity {
     }
 
     private void getIngredientQuantity(List<String> recipe) throws JSONException {
-        jsonObject = ReadDataJson.main(getExternalFilesDir(null).toString());
+        jsonObject = ReadDataJson.getRecipesInput(getExternalFilesDir(null).toString());        //Get "Recipes input"
         int nbRecipesSelected = recipe.size();
         while(nbRecipesSelected != 0){
             JSONObject recipeObj = jsonObject.getJSONObject(recipe.get(nbRecipesSelected-1));         //Get a recipe
-            JSONArray ingredientObj = recipeObj.getJSONArray("Ingredients");      //Get the ingredients
+            JSONArray ingredientObj = recipeObj.getJSONArray("Ingredients");                    //Get the ingredients
             int size = ingredientObj.length();
             while (size != 0){
-                JSONObject getFirstIngredient = ingredientObj.getJSONObject(size-1);
+                JSONObject getFirstIngredient = ingredientObj.getJSONObject(size-1);            //Get the i ingredient
                 String getNameIngredient = getFirstIngredient.getString("Name");
                 int getQuantityIngredient = Integer.valueOf(getFirstIngredient.getString("Quantity"));
                 ingredientQuantity.put(getNameIngredient, getQuantityIngredient);
@@ -129,13 +111,27 @@ public class RecipesList extends AppCompatActivity {
         }
     }
 
-    public void OpenIngredientsListFct(){
+    public void openIngredientsListFct(){
         Intent intent = new Intent(this, ShoppingIngredientList.class);
         startActivity(intent);
     }
 
-    public void setIemSelected(){
-
+    public void checkRecipesSelectedFromJson(){
+        //Get the recipes selected from the JSON
+        List<String> recipesSelectedList = null;
+        try {
+            recipesSelectedList = ReadDataJson.getRecipesSelected(String.valueOf(getExternalFilesDir(null)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //Check the recipes selected from the JSON on the listView
+        for (int i = 0; i < recipesSelectedList.size(); ++i) {
+            for (int j = 0; j < lvAllRecipe.getAdapter().getCount(); ++j) {
+                if ((String.valueOf((lvAllRecipe.getItemAtPosition(j)))).equals(recipesSelectedList.get(i))) {
+                    lvAllRecipe.setItemChecked(j, true);
+                }
+            }
+        }
     }
 
 }
