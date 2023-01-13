@@ -154,4 +154,42 @@ public class WriteDataJson {
         }
 
     }
+
+    static public void saveIngredientSelectedJSON(List<String> selectedIngredientsList, String path) throws JSONException, IOException {
+
+        String data = "";
+
+        try{
+            File f = new File(path + "/newTestFile.json");
+
+            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+
+            while ((line = bufferedReader.readLine())!= null){
+                data = data + line;
+            }
+
+            if(!data.isEmpty()){
+                JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
+
+                JSONArray jsonArray = new JSONArray();
+                for (int i=0; i < selectedIngredientsList.size(); i++) {
+                    jsonArray.put(selectedIngredientsList.get(i));
+                }
+
+                jsonObject.put("Ingredients selected", jsonArray);
+
+                f = new File(path + "/newTestFile.json");
+                FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
+                file.write(jsonObject.toString(2));
+                file.flush();
+                file.close();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }
