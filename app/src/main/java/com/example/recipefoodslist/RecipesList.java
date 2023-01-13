@@ -64,6 +64,7 @@ public class RecipesList extends AppCompatActivity {
                     selectedRecipeList.remove(lvAllRecipe.getItemAtPosition(i));
                     ShoppingIngredientList.ingredientNameQty.clear();
                     ingredientQuantity.clear();
+                    ShoppingIngredientList.eraseIngredientsSelectedMemory();
                 } else {
                     selectedRecipeList.add(String.valueOf(lvAllRecipe.getItemAtPosition(i)));
                 }

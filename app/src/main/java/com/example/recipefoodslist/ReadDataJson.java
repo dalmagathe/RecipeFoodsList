@@ -67,4 +67,16 @@ public class ReadDataJson {
         return recipesSelected;
     }
 
+    public static List<String> getIngredientsSelected(String path) throws JSONException {
+        List<String> ingredientsSelected = new Vector<>();
+        JSONObject jsonObject = getAllJsonObj(path);
+        if(jsonObject.has("Ingredients selected")){
+            JSONArray jsonArray = jsonObject.getJSONArray("Ingredients selected");
+            for (int i=0; i < jsonArray.length(); i++) {
+                ingredientsSelected.add((String) jsonArray.get(i));
+            }
+        }
+        return ingredientsSelected;
+    }
+
 }
