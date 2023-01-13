@@ -53,7 +53,7 @@ public class WriteDataJson {
                 }
 
                 if(!data.isEmpty()){
-                    JSONObject jsonObject = parsingJSON(f, data);
+                    JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
                     writeNewJSONData(f, jsonObject, Recipe, Ingredient, Qty, Unit);
                 }
             }
@@ -62,14 +62,6 @@ public class WriteDataJson {
         catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    private static JSONObject parsingJSON(File f, String data) throws JSONException, IOException {
-        JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
-        //JSONObject allRecipesInput = jsonObject.getJSONObject("Recipes input");
-        //JSONObject recipeObj = jsonObject.getJSONObject("PateCarbo");         Get a recipe
-        //JSONArray ingredientObj = recipeObj.getJSONArray("Ingredients");      Get the ingredients
-        return jsonObject;
     }
 
     private static JSONObject createJSON(String Recipe, String Ingredient, String Qty, String Unit) throws JSONException {
@@ -141,7 +133,7 @@ public class WriteDataJson {
             }
 
             if(!data.isEmpty()){
-                JSONObject jsonObject = parsingJSON(f, data);
+                JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
 
                 JSONArray jsonArray = new JSONArray();
                 for (int i=0; i < selectedRecipeList.size(); i++) {

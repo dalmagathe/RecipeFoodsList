@@ -49,12 +49,6 @@ public class ReadDataJson {
         return jsonObject;
     }
 
-    private static JSONObject parsingJSON(File f, String data) throws JSONException, IOException {
-        JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
-        JSONObject allRecipesInput = jsonObject.getJSONObject("Recipes input");
-        return allRecipesInput;
-    }
-
     public static JSONObject getRecipesInput(String path) throws JSONException {
         JSONObject jsonObject = getAllJsonObj(path);
         JSONObject allRecipesInput = jsonObject.getJSONObject("Recipes input");
@@ -62,13 +56,14 @@ public class ReadDataJson {
     }
 
     public static List<String> getRecipesSelected(String path) throws JSONException {
-        JSONObject jsonObject = getAllJsonObj(path);
-        JSONArray jsonArray = jsonObject.getJSONArray("Recipes selected");
         List<String> recipesSelected = new Vector<>();
-        for (int i=0; i < jsonArray.length(); i++) {
-            recipesSelected.add((String) jsonArray.get(i));
+        JSONObject jsonObject = getAllJsonObj(path);
+        if(jsonObject.has("Recipes selected")){
+            JSONArray jsonArray = jsonObject.getJSONArray("Recipes selected");
+            for (int i=0; i < jsonArray.length(); i++) {
+                recipesSelected.add((String) jsonArray.get(i));
+            }
         }
-
         return recipesSelected;
     }
 

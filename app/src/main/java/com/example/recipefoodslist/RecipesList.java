@@ -47,7 +47,14 @@ public class RecipesList extends AppCompatActivity {
         lvAllRecipe.setAdapter(adapter);
 
         //Check the selected recipes from the JSON in the listVIew
-        checkRecipesSelectedFromJson();
+        try {
+            checkRecipesSelectedFromJson();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //Update the previously recipes list selected
+        getItemSelected();
 
         //Get recipes selected from the user
         lvAllRecipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -116,20 +123,25 @@ public class RecipesList extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void checkRecipesSelectedFromJson(){
+    public void checkRecipesSelectedFromJson() throws JSONException {
         //Get the recipes selected from the JSON
         List<String> recipesSelectedList = null;
-        try {
-            recipesSelectedList = ReadDataJson.getRecipesSelected(String.valueOf(getExternalFilesDir(null)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        recipesSelectedList = ReadDataJson.getRecipesSelected(String.valueOf(getExternalFilesDir(null)));
         //Check the recipes selected from the JSON on the listView
         for (int i = 0; i < recipesSelectedList.size(); ++i) {
             for (int j = 0; j < lvAllRecipe.getAdapter().getCount(); ++j) {
                 if ((String.valueOf((lvAllRecipe.getItemAtPosition(j)))).equals(recipesSelectedList.get(i))) {
                     lvAllRecipe.setItemChecked(j, true);
                 }
+            }
+        }
+    }
+
+    public void getItemSelected(){
+        for (int i = 0; i < recipe.size(); i++){
+            boolean isRecipeSelected = lvAllRecipe.isItemChecked(i);
+            if (isRecipeSelected == true){
+                selectedRecipeList.add(String.valueOf(lvAllRecipe.getItemAtPosition(i)));
             }
         }
     }
