@@ -42,6 +42,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
     String previousRecipe = "";
 
     EditText etRecipeName;
+    EditText etLink;
     EditText etIngredientName;
     EditText etIngredientQuantity;
     Spinner etIngredientUnit;
@@ -59,6 +60,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         spinner.setOnItemSelectedListener(this);
 
         etRecipeName = (EditText) findViewById(R.id.recipeName);
+        etLink = (EditText) findViewById(R.id.recipeLink);
         etIngredientName = (EditText) findViewById(R.id.ingredientName);
         etIngredientQuantity = (EditText) findViewById(R.id.ingredientQuantity);
         etIngredientUnit = (Spinner) findViewById(R.id.spinnerUnit);
@@ -108,7 +110,7 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
                     ingredientAdapter.notifyDataSetChanged();
                     listView.setAdapter(ingredientAdapter);
 
-                    writeIntoJSON(etRecipeName.getText().toString(), Ingredient.get(listSize), Qty.get(listSize), Unit.get(listSize));
+                    writeIntoJSON(etRecipeName.getText().toString(), etLink.getText().toString(), Ingredient.get(listSize), Qty.get(listSize), Unit.get(listSize));
                     ++ingredientNB;
                     previousRecipe = etRecipeName.getText().toString();
                 }
@@ -135,9 +137,9 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
 
     }
 
-    public void writeIntoJSON(String Recipe, String Ingredient, String Qty, String Unit){
+    public void writeIntoJSON(String Recipe, String Link, String Ingredient, String Qty, String Unit){
         try {
-            WriteDataJson.main(getExternalFilesDir(null).toString(), Recipe, Ingredient, Qty, Unit);
+            WriteDataJson.main(getExternalFilesDir(null).toString(), Recipe, Link, Ingredient, Qty, Unit);
         }
         catch (IOException e){
             e.printStackTrace();

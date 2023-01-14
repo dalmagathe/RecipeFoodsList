@@ -1,19 +1,23 @@
 package com.example.recipefoodslist;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -60,7 +64,7 @@ public class RecipesList extends AppCompatActivity {
         lvAllRecipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (selectedRecipeList.contains(String.valueOf((lvAllRecipe.getItemAtPosition(i))))) {
+                if (selectedRecipeList.contains(String.valueOf((lvAllRecipe.getItemAtPosition(i))))) { //.substring(0, String.valueOf((lvAllRecipe.getItemAtPosition(i))).indexOf("\n"))
                     selectedRecipeList.remove(lvAllRecipe.getItemAtPosition(i));
                     ShoppingIngredientList.ingredientNameQty.clear();
                     ingredientQuantity.clear();
@@ -68,6 +72,21 @@ public class RecipesList extends AppCompatActivity {
                 } else {
                     selectedRecipeList.add(String.valueOf(lvAllRecipe.getItemAtPosition(i)));
                 }
+            }
+        });
+
+        lvAllRecipe.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                try {
+                    jsonObject = ReadDataJson.getRecipesInput(getExternalFilesDir(null).toString());
+                    JSONObject recipeObj = jsonObject.getJSONObject(String.valueOf((lvAllRecipe.getItemAtPosition(i))));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(recipeObj.getString("Link")));
+                    startActivity(browserIntent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return false;
             }
         });
 
@@ -94,6 +113,9 @@ public class RecipesList extends AppCompatActivity {
         Iterator<String> keys = jsonObject.keys();
         while (keys.hasNext()){
             String key = keys.next();
+            JSONObject recipeObj = jsonObject.getJSONObject(key);
+            String link = recipeObj.getString("Link");
+            //recipe.add(key + "\n" + link);
             recipe.add(key);
         }
     }
