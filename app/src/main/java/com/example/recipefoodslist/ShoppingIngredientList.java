@@ -23,7 +23,7 @@ import java.util.Vector;
 
 public class ShoppingIngredientList extends AppCompatActivity {
 
-    static Map<String, Integer> ingredientQuantity = new HashMap<>();
+    static Map<String, Integer> ingredientQty = new HashMap<>();
     static ListView lvAllIngredient;
     Map<String, Integer> ingredientQuantityList = new HashMap<>();
     static List<String> ingredientNameQty = new Vector<>();
@@ -35,6 +35,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         setContentView(R.layout.activity_shopping_ingredient_list);
 
         lvAllIngredient = findViewById(R.id.allIngredientView);
+        convertMapToList();
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientNameQty);
         lvAllIngredient.setAdapter(adapter);
 
@@ -67,9 +68,9 @@ public class ShoppingIngredientList extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
         try {
             WriteDataJson.saveIngredientSelectedJSON(ingredientSelected, getExternalFilesDir(null).toString());
+            ingredientQty.clear();
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -77,12 +78,26 @@ public class ShoppingIngredientList extends AppCompatActivity {
         }
     }
 
-    static public void main(Map<String, Integer> ingredientQuantity) {
+    private void convertMapToList() {
         ingredientNameQty.clear();
-        for (Map.Entry<String, Integer> entry : ingredientQuantity.entrySet()) {
+        for (Map.Entry<String, Integer> entry : ingredientQty.entrySet()) {
             String k = entry.getKey();
             int v = entry.getValue();
             ingredientNameQty.add(k + " " + String.valueOf(v));
+        }
+    }
+
+    static public void sumSaveIngredients(Map<String, Integer> ingredientQuantity){
+        for (Map.Entry<String, Integer> entry : ingredientQuantity.entrySet()) {
+            if(ingredientQty.containsKey(entry.getKey())){
+                int value = ingredientQty.get(entry.getKey()) + entry.getValue();
+                ingredientQty.put(entry.getKey(), value);
+            }
+            else{
+                String k = entry.getKey();
+                int v = entry.getValue();
+                ingredientQty.put(k, v);
+            }
         }
     }
 

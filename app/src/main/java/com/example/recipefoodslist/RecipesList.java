@@ -113,7 +113,8 @@ public class RecipesList extends AppCompatActivity {
                 --size;
             }
             if(size == 0){
-                ShoppingIngredientList.main(ingredientQuantity);
+                ShoppingIngredientList.sumSaveIngredients(ingredientQuantity);
+                ingredientQuantity.clear();
             }
             --nbRecipesSelected;
         }
