@@ -194,4 +194,55 @@ public class WriteDataJson {
         }
 
     }
+
+    static public void saveNewElementAddedJSON(String path, String ElementName, String ElementQty, String ElementUnit) throws JSONException, IOException {
+
+        String data = "";
+
+        try{
+            File f = new File(path + "/newTestFile.json");
+
+            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+
+            while ((line = bufferedReader.readLine())!= null){
+                data = data + line;
+            }
+
+            if(!data.isEmpty()){
+                JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
+
+                if(jsonObject.has("Elements added")){
+                    JSONObject objNewElement = new JSONObject();
+                    objNewElement.put("Name", ElementName);
+                    objNewElement.put("Quantity", ElementQty);
+                    objNewElement.put("Unit", ElementUnit);
+
+                    jsonObject.getJSONArray("Elements added").put(objNewElement);
+                }
+                else{
+                    JSONObject objNewElement = new JSONObject();
+                    objNewElement.put("Name", ElementName);
+                    objNewElement.put("Quantity", ElementQty);
+                    objNewElement.put("Unit", ElementUnit);
+
+                    JSONArray testArray = new JSONArray();
+                    testArray.put(objNewElement);
+
+                    jsonObject.put("Elements added", testArray);
+                }
+
+                f = new File(path + "/newTestFile.json");
+                FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
+                file.write(jsonObject.toString(2));
+                file.flush();
+                file.close();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 }

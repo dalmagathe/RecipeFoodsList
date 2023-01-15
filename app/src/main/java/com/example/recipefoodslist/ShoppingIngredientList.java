@@ -7,11 +7,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import javax.microedition.khronos.egl.EGLDisplay;
+
 public class ShoppingIngredientList extends AppCompatActivity {
 
     static Map<String, Integer> ingredientQty = new HashMap<>();
@@ -28,15 +33,25 @@ public class ShoppingIngredientList extends AppCompatActivity {
     Map<String, Integer> ingredientQuantityList = new HashMap<>();
     static List<String> ingredientNameQty = new Vector<>();
     static List<String> ingredientSelected = new Vector<>();
+    private Button btn;
+    ArrayAdapter<String> adapter;
+    //private List<String> elementAddedList = new Vector<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_ingredient_list);
 
+        btn = (Button) findViewById(R.id.addElementsBtn);
+
         lvAllIngredient = findViewById(R.id.allIngredientView);
         convertMapToList();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientNameQty);
+        try {
+            addPreviousElementAddedToList();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientNameQty);
         lvAllIngredient.setAdapter(adapter);
 
         //Check the selected recipes from the JSON in the listVIew
@@ -63,8 +78,38 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 }
             }
         });
+
+        onBtnClick();
     }
 
+    private void onBtnClick(){
+
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Get information
+                EditText elementNameEt = (EditText) findViewById(R.id.elementName);
+                EditText elementQtyEt = (EditText) findViewById(R.id.elementQty);
+                Spinner elementUnitEt = (Spinner) findViewById(R.id.elementUnit);
+
+                //Save information into a list
+                ingredientNameQty.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString());
+
+                //Display the information
+                adapter.notifyDataSetChanged();
+                lvAllIngredient.setAdapter(adapter);
+
+                //Save into JSON
+                try {
+                    WriteDataJson.saveNewElementAddedJSON(getExternalFilesDir(null).toString(), elementNameEt.getText().toString(), elementQtyEt.getText().toString(), "gr");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
     @Override
     protected void onStop() {
         super.onStop();
@@ -85,6 +130,20 @@ public class ShoppingIngredientList extends AppCompatActivity {
             int v = entry.getValue();
             ingredientNameQty.add(k + " " + String.valueOf(v));
         }
+    }
+
+    private void addPreviousElementAddedToList() throws JSONException {
+        JSONArray elementsObj = ReadDataJson.getElementsAdded(getExternalFilesDir(null).toString());
+        int nbElements = elementsObj.length();
+        while (nbElements != 0){
+            JSONObject elementsIndI = elementsObj.getJSONObject(nbElements-1);
+            String name = elementsIndI.getString("Name");
+            String qty = elementsIndI.getString("Quantity");
+            //String unit = elementsIndI.getString("Unit");
+            ingredientNameQty.add(name + " " + qty);
+            --nbElements;
+        }
+
     }
 
     static public void sumSaveIngredients(Map<String, Integer> ingredientQuantity){
