@@ -1,9 +1,12 @@
 package com.example.recipefoodslist;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PatternMatcher;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.microedition.khronos.egl.EGLDisplay;
 
@@ -30,12 +35,14 @@ public class ShoppingIngredientList extends AppCompatActivity {
 
     static Map<String, Integer> ingredientQty = new HashMap<>();
     static ListView lvAllIngredient;
+    static ListView lvElementAdded;
     Map<String, Integer> ingredientQuantityList = new HashMap<>();
     static List<String> ingredientNameQty = new Vector<>();
     static List<String> ingredientSelected = new Vector<>();
     private Button btn;
     ArrayAdapter<String> adapter;
-    //private List<String> elementAddedList = new Vector<>();
+    ArrayAdapter<String> adapterElementAdded;
+    private List<String> elementAddedList = new Vector<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +52,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         btn = (Button) findViewById(R.id.addElementsBtn);
 
         lvAllIngredient = findViewById(R.id.allIngredientView);
+        lvElementAdded = findViewById(R.id.elementAddedView);
         convertMapToList();
         try {
             addPreviousElementAddedToList();
@@ -53,6 +61,9 @@ public class ShoppingIngredientList extends AppCompatActivity {
         }
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientNameQty);
         lvAllIngredient.setAdapter(adapter);
+
+        adapterElementAdded = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, elementAddedList);
+        lvElementAdded.setAdapter(adapterElementAdded);
 
         //Check the selected recipes from the JSON in the listVIew
         try {
@@ -79,8 +90,49 @@ public class ShoppingIngredientList extends AppCompatActivity {
             }
         });
 
+        lvElementAdded.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final Dialog dialog = new Dialog(ShoppingIngredientList.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.popup);
+                dialog.show();
+
+                Button btnYes = dialog.findViewById(R.id.yestn);
+
+                btnYes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        for (int j = 0; j < elementAddedList.size(); ++j){
+                            String name;
+                            String test = lvElementAdded.getItemAtPosition(i).toString();
+                            if (elementAddedList.get(j) == lvElementAdded.getItemAtPosition(i)){
+                                elementAddedList.remove(j);
+                                adapterElementAdded = new ArrayAdapter<String>(ShoppingIngredientList.this, android.R.layout.simple_list_item_multiple_choice, elementAddedList);
+                                lvElementAdded.setAdapter(adapterElementAdded);
+                                Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
+                                Matcher m = p.matcher(test);
+                                if (m.matches()) {
+                                    name = m.group(1);
+                                }
+                                else {
+                                    name ="";
+                                }
+                                WriteDataJson.removeElementJSON(getExternalFilesDir(null).toString(), name);
+                                dialog.cancel();
+                                break;
+                            }
+                        }
+                    }
+                });
+                return false;
+            }
+        });
+
         onBtnClick();
     }
+
 
     private void onBtnClick(){
 
@@ -93,11 +145,11 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 Spinner elementUnitEt = (Spinner) findViewById(R.id.elementUnit);
 
                 //Save information into a list
-                ingredientNameQty.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString());
+                elementAddedList.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString());
 
                 //Display the information
-                adapter.notifyDataSetChanged();
-                lvAllIngredient.setAdapter(adapter);
+                adapterElementAdded.notifyDataSetChanged();
+                lvElementAdded.setAdapter(adapterElementAdded);
 
                 //Save into JSON
                 try {
@@ -140,10 +192,9 @@ public class ShoppingIngredientList extends AppCompatActivity {
             String name = elementsIndI.getString("Name");
             String qty = elementsIndI.getString("Quantity");
             //String unit = elementsIndI.getString("Unit");
-            ingredientNameQty.add(name + " " + qty);
+            elementAddedList.add(name + " " + qty);
             --nbElements;
         }
-
     }
 
     static public void sumSaveIngredients(Map<String, Integer> ingredientQuantity){

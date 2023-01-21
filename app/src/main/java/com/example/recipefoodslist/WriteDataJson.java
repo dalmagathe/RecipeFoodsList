@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 public class WriteDataJson {
 
@@ -244,5 +245,46 @@ public class WriteDataJson {
             e.printStackTrace();
         }
 
+    }
+
+    static public void removeElementJSON (String path, String name){
+        String data = "";
+
+        try{
+            File f = new File(path + "/newTestFile.json");
+
+            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+
+            while ((line = bufferedReader.readLine())!= null){
+                data = data + line;
+            }
+
+            if(!data.isEmpty()){
+                JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
+                JSONArray elementAddedObj = jsonObject.getJSONArray("Elements added");
+
+                for (int i=0; i < elementAddedObj.length(); i++) {
+                    JSONObject nameElement = elementAddedObj.getJSONObject(i);
+                    String test = nameElement.get("Name").toString();
+                    if (test.equals(name)) {
+                        elementAddedObj.remove(i);
+                    }
+                }
+
+                jsonObject.put("Elements added", elementAddedObj);
+
+                f = new File(path + "/newTestFile.json");
+                FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
+                file.write(jsonObject.toString(2));
+                file.flush();
+                file.close();
+
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
