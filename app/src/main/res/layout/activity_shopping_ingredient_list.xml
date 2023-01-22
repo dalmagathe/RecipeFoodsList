@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="10dp"
     tools:context=".ShoppingIngredientList">
 
     <LinearLayout
@@ -13,74 +14,82 @@
         tools:layout_editor_absoluteX="-5dp"
         tools:layout_editor_absoluteY="16dp">
 
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.05"
+            android:background="#FFA88C" />
+
         <TextView
             android:id="@+id/textView5"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ingredients from recipes" />
+            android:layout_height="0dp"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:text="Ingredients from recipes"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ListView
             android:id="@+id/allIngredientView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:choiceMode="multipleChoice"
-            android:divider="@color/black"
-            android:dividerHeight="2dp" />
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:choiceMode="multipleChoice" />
 
         <View
             android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider" />
+            android:layout_width="200dp"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.05"
+            android:background="#FFA88C" />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Element added" />
+            android:layout_height="0dp"
+            android:layout_weight=".5"
+            android:gravity="center"
+            android:text="Element added"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <ListView
-            android:id="@+id/elementAddedView"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:choiceMode="multipleChoice" />
+            android:layout_height="0dp"
+            android:layout_weight="4">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/elementName"
-                android:layout_width="400dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Name" />
-
-            <EditText
-                android:id="@+id/elementQty"
-                android:layout_width="400dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Qty" />
-
-            <Spinner
-                android:id="@+id/elementUnit"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </LinearLayout>
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/addElementsBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:insetLeft="100dp"
-            android:insetRight="100dp"
-            android:text="Add new element" />
+                <ListView
+                    android:id="@+id/elementAddedView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="6"
+                    android:choiceMode="multipleChoice" />
+
+                <Button
+                    android:id="@+id/addElementsBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="1.2"
+                    android:backgroundTint="#FFFF5722"
+                    android:insetLeft="50dp"
+                    android:insetTop="10dp"
+                    android:insetRight="50dp"
+                    android:text="Add new element"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </FrameLayout>
 
     </LinearLayout>
 

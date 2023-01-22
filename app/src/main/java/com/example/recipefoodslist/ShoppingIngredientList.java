@@ -7,6 +7,7 @@ import android.os.PatternMatcher;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -47,6 +48,9 @@ public class ShoppingIngredientList extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_shopping_ingredient_list);
 
         btn = (Button) findViewById(R.id.addElementsBtn);
@@ -139,26 +143,42 @@ public class ShoppingIngredientList extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Get information
-                EditText elementNameEt = (EditText) findViewById(R.id.elementName);
-                EditText elementQtyEt = (EditText) findViewById(R.id.elementQty);
-                Spinner elementUnitEt = (Spinner) findViewById(R.id.elementUnit);
+                final Dialog dialog = new Dialog(ShoppingIngredientList.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setCancelable(true);
+                dialog.setContentView(R.layout.popup_add_element);
+                dialog.show();
 
-                //Save information into a list
-                elementAddedList.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString());
+                Button btnAdd = dialog.findViewById(R.id.btnAddElement);
 
-                //Display the information
-                adapterElementAdded.notifyDataSetChanged();
-                lvElementAdded.setAdapter(adapterElementAdded);
+                btnAdd.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //Get information
+                        EditText elementNameEt = (EditText) dialog.findViewById(R.id.elementName2);
+                        EditText elementQtyEt = (EditText) dialog.findViewById(R.id.elementQty2);
+                        EditText elementUnitEt = (EditText) dialog.findViewById(R.id.elementUnit2);
 
-                //Save into JSON
-                try {
-                    WriteDataJson.saveNewElementAddedJSON(getExternalFilesDir(null).toString(), elementNameEt.getText().toString(), elementQtyEt.getText().toString(), "gr");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                        //Save information into a list
+                        elementAddedList.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString());
+
+                        //Display the information
+                        adapterElementAdded.notifyDataSetChanged();
+                        lvElementAdded.setAdapter(adapterElementAdded);
+
+                        //Save into JSON
+                        try {
+                            WriteDataJson.saveNewElementAddedJSON(getExternalFilesDir(null).toString(), elementNameEt.getText().toString(), elementQtyEt.getText().toString(), "gr");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        dialog.cancel();
+                    }
+                });
+
             }
         });
     }
