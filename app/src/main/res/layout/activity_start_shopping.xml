@@ -2,32 +2,52 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="10dp"
+    android:weightSum="2"
     tools:context=".RecipesList">
 
-    <ListView
-        android:id="@+id/allRecipeView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:choiceMode="multipleChoice"
-        android:divider="@color/black"
-        android:dividerHeight="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
 
-    <Button
-        android:id="@+id/openIngredientListActivity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/allRecipeView"
-        app:layout_constraintVertical_bias="0.502" />
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:text="Select the recipes for the week"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/allRecipeView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="9dp"
+            android:layout_weight="10"
+            android:choiceMode="multipleChoice"
+            android:divider="#FFFEB90A"
+            android:dividerHeight="1dp" />
+
+        <Button
+            android:id="@+id/openIngredientListActivity"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_weight="1"
+            android:backgroundTint="#D89E0A"
+            android:text="Go to the ingredients" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
