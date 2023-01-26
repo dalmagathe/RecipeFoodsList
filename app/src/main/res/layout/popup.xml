@@ -9,29 +9,39 @@
         android:id="@+id/textView6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:autoText="false"
+        android:layout_weight="1"
         android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:paddingBottom="10sp"
         android:text="Do you want to remove the item?"
+        android:textAlignment="center"
         android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/yestn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:text="Yes" />
+            android:backgroundTint="#D89E0A"
+            android:text="Yes"
+            android:textSize="16sp" />
 
         <Button
             android:id="@+id/noBtn"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:layout_weight="1"
-            android:text="No" />
+            android:backgroundTint="#D89E0A"
+            android:text="No"
+            android:textSize="16sp" />
     </LinearLayout>
 </LinearLayout>
