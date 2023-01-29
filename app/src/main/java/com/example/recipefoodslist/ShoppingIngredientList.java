@@ -41,6 +41,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
     Map<String, Integer> ingredientQuantityList = new HashMap<>();
     static List<String> ingredientNameQty = new Vector<>();
     static List<String> ingredientSelected = new Vector<>();
+    static List<String> elementSelected = new Vector<>();
     private Button btn;
     ArrayAdapter<String> adapter;
     ArrayAdapter<String> adapterElementAdded;
@@ -73,6 +74,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         //Check the selected recipes from the JSON in the listVIew
         try {
             checkRecipesSelectedFromJson();
+            checkElementsSelectedFromJson();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -91,6 +93,19 @@ public class ShoppingIngredientList extends AppCompatActivity {
                     else {
                         ingredientSelected.remove(lvAllIngredient.getItemAtPosition(i));
                     }
+                }
+            }
+        });
+
+        lvElementAdded.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                SparseBooleanArray arrayItemChecked = lvElementAdded.getCheckedItemPositions();
+                if (arrayItemChecked.get(i) && !(elementSelected.contains(String.valueOf((lvElementAdded.getItemAtPosition(i)))))) {
+                    elementSelected.add(String.valueOf((lvElementAdded.getItemAtPosition(i))));
+                }
+                else {
+                    elementSelected.remove(lvElementAdded.getItemAtPosition(i));
                 }
             }
         });
@@ -196,6 +211,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         super.onStop();
         try {
             WriteDataJson.saveIngredientSelectedJSON(ingredientSelected, getExternalFilesDir(null).toString());
+            WriteDataJson.saveElementSelectedJSON(elementSelected, getExternalFilesDir(null).toString());
             ingredientQty.clear();
             ingredientQtyVector.clear();
         } catch (JSONException e) {
@@ -261,6 +277,20 @@ public class ShoppingIngredientList extends AppCompatActivity {
         }
     }
 
+    public void checkElementsSelectedFromJson() throws JSONException {
+        //Get the recipes selected from the JSON
+        List<String> elementsSelectedList = null;
+        elementsSelectedList = ReadDataJson.getElementsSelected(String.valueOf(getExternalFilesDir(null)));
+        //Check the recipes selected from the JSON on the listView
+        for (int i = 0; i < elementsSelectedList.size(); ++i) {
+            for (int j = 0; j < lvElementAdded.getAdapter().getCount(); ++j) {
+                if ((String.valueOf((lvElementAdded.getItemAtPosition(j)))).equals(elementsSelectedList.get(i))) {
+                    lvElementAdded.setItemChecked(j, true);
+                }
+            }
+        }
+    }
+
     /*
     public void getItemSelected(){
         for (int i = 0; i < ingredientNameQty.size(); i++){
@@ -273,5 +303,6 @@ public class ShoppingIngredientList extends AppCompatActivity {
 
     static public void eraseIngredientsSelectedMemory(){
         ingredientSelected.clear();
+        elementSelected.clear();
     }
 }

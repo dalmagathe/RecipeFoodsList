@@ -88,6 +88,18 @@ public class ReadDataJson {
         return ingredientsSelected;
     }
 
+    public static List<String> getElementsSelected(String path) throws JSONException {
+        List<String> elementsSelected = new Vector<>();
+        JSONObject jsonObject = getAllJsonObj(path);
+        if(jsonObject.has("Elements selected")){
+            JSONArray jsonArray = jsonObject.getJSONArray("Elements selected");
+            for (int i=0; i < jsonArray.length(); i++) {
+                elementsSelected.add((String) jsonArray.get(i));
+            }
+        }
+        return elementsSelected;
+    }
+
     public static List<String> getLink(String path) throws JSONException {
         List<String> ingredientsSelected = new Vector<>();
         JSONObject jsonObject = getAllJsonObj(path);
