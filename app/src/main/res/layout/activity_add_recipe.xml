@@ -8,59 +8,104 @@
     android:orientation="vertical"
     tools:context=".AddRecipe">
 
-    <TextView
-        android:id="@+id/textView2"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Name of the recipe"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/recipeName"
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="Name of the recipe"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Nb"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:backgroundTint="#FFFF5722"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:textAlignment="center"
-        android:textColor="#393939"
-        android:textStyle="italic" />
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/recipeName"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:backgroundTint="#FFFF5722"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textColor="#393939"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+
+        <EditText
+            android:id="@+id/recipeNb"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:backgroundTint="#FFFF5722"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:textAlignment="center"
+            android:textColor="#393939"
+            android:textSize="16sp"
+            android:textStyle="italic" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="Link to the recipe"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:gravity="center"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/recipeLink"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
         android:backgroundTint="#FFFF5722"
         android:ems="10"
         android:inputType="textPersonName"
         android:textAlignment="center"
         android:textColor="#393939"
+        android:textSize="16sp"
         android:textStyle="italic" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:text="Ingredient"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        android:gravity="center"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="10dp"
+        android:layout_weight="15"
         android:background="@drawable/border">
 
         <LinearLayout
@@ -71,13 +116,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="200dp"
+                    android:layout_width="0dp"
                     android:layout_height="35dp"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:background="#FFE92061"
                     android:gravity="center"
                     android:text="Ingredient"
@@ -85,7 +131,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="35dp"
                     android:layout_weight="1"
                     android:background="#FFE92061"
@@ -96,7 +142,7 @@
 
                 <TextView
                     android:id="@+id/Unit"
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="35dp"
                     android:layout_weight="1"
                     android:background="#FFE92061"
@@ -109,47 +155,52 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="0dp"
                 android:layout_marginLeft="3dp"
                 android:layout_marginRight="3dp"
+                android:layout_weight="1.5"
                 android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/ingredientName"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
                     android:backgroundTint="#FFFF5722"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:textColor="#393939"
+                    android:textSize="16sp"
                     android:textStyle="italic" />
 
                 <EditText
                     android:id="@+id/ingredientQuantity"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:backgroundTint="#FFFF5722"
                     android:ems="10"
                     android:inputType="textPersonName"
                     android:textColor="#393939"
+                    android:textSize="16sp"
                     android:textStyle="italic" />
 
                 <Spinner
                     android:id="@+id/spinnerUnit"
-                    android:layout_width="150dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:backgroundTint="#FFFF5722" />
+                    android:backgroundTint="#FFFF5722"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <Button
                 android:id="@+id/addIngredientBtn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
+                android:layout_weight="1"
                 android:backgroundTint="#FFE92061"
                 android:text="Add an ingredient"
                 android:textColor="@color/white"
@@ -158,8 +209,9 @@
             <ListView
                 android:id="@+id/listView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="7dp">
+                android:layout_height="0dp"
+                android:layout_marginBottom="7dp"
+                android:layout_weight="9">
 
             </ListView>
 
