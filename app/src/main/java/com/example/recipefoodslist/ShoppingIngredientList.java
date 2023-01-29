@@ -35,6 +35,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 public class ShoppingIngredientList extends AppCompatActivity {
 
     static Map<String, Integer> ingredientQty = new HashMap<>();
+    static List<String> ingredientQtyVector = new Vector<>();
     static ListView lvAllIngredient;
     static ListView lvElementAdded;
     Map<String, Integer> ingredientQuantityList = new HashMap<>();
@@ -63,7 +64,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientNameQty);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientQtyVector);  //ingredientNameQty
         lvAllIngredient.setAdapter(adapter);
 
         adapterElementAdded = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, elementAddedList);
@@ -77,7 +78,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         }
 
         //Update the previously recipes list selected
-        getItemSelected();
+        //getItemSelected();
 
         lvAllIngredient.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -104,6 +105,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 dialog.show();
 
                 Button btnYes = dialog.findViewById(R.id.yestn);
+                Button btnNo = dialog.findViewById(R.id.noBtn);
 
                 btnYes.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -128,6 +130,13 @@ public class ShoppingIngredientList extends AppCompatActivity {
                                 break;
                             }
                         }
+                    }
+                });
+
+                btnNo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.cancel();
                     }
                 });
                 return false;
@@ -160,7 +169,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
                         EditText elementUnitEt = (EditText) dialog.findViewById(R.id.elementUnit2);
 
                         //Save information into a list
-                        elementAddedList.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString());
+                        elementAddedList.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString() + " " + elementUnitEt.getText().toString());
 
                         //Display the information
                         adapterElementAdded.notifyDataSetChanged();
@@ -168,7 +177,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
 
                         //Save into JSON
                         try {
-                            WriteDataJson.saveNewElementAddedJSON(getExternalFilesDir(null).toString(), elementNameEt.getText().toString(), elementQtyEt.getText().toString(), "gr");
+                            WriteDataJson.saveNewElementAddedJSON(getExternalFilesDir(null).toString(), elementNameEt.getText().toString(), elementQtyEt.getText().toString(), elementUnitEt.getText().toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -188,6 +197,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         try {
             WriteDataJson.saveIngredientSelectedJSON(ingredientSelected, getExternalFilesDir(null).toString());
             ingredientQty.clear();
+            ingredientQtyVector.clear();
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -211,13 +221,13 @@ public class ShoppingIngredientList extends AppCompatActivity {
             JSONObject elementsIndI = elementsObj.getJSONObject(nbElements-1);
             String name = elementsIndI.getString("Name");
             String qty = elementsIndI.getString("Quantity");
-            //String unit = elementsIndI.getString("Unit");
-            elementAddedList.add(name + " " + qty);
+            String unit = elementsIndI.getString("Unit");
+            elementAddedList.add(name + " " + qty + " " + unit);
             --nbElements;
         }
     }
 
-    static public void sumSaveIngredients(Map<String, Integer> ingredientQuantity){
+    /*static public void sumSaveIngredients(Map<String, Integer> ingredientQuantity){
         for (Map.Entry<String, Integer> entry : ingredientQuantity.entrySet()) {
             if(ingredientQty.containsKey(entry.getKey())){
                 int value = ingredientQty.get(entry.getKey()) + entry.getValue();
@@ -228,6 +238,12 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 int v = entry.getValue();
                 ingredientQty.put(k, v);
             }
+        }
+    }*/
+
+    static public void sumSaveIngredientsList(List<String> ingredientQuantity){
+        for(int i = 0 ; i < ingredientQuantity.size() ; ++i){
+            ingredientQtyVector.add(ingredientQuantity.get(i));
         }
     }
 
@@ -245,6 +261,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         }
     }
 
+    /*
     public void getItemSelected(){
         for (int i = 0; i < ingredientNameQty.size(); i++){
             boolean isRecipeSelected = lvAllIngredient.isItemChecked(i);
@@ -252,7 +269,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 ingredientSelected.add(String.valueOf(lvAllIngredient.getItemAtPosition(i)));
             }
         }
-    }
+    }*/
 
     static public void eraseIngredientsSelectedMemory(){
         ingredientSelected.clear();

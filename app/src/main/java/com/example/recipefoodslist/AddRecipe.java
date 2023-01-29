@@ -31,7 +31,7 @@ import com.example.recipefoodslist.WriteDataJson;
 
 import org.json.JSONException;
 
-public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AddRecipe extends AppCompatActivity {
 
     private List<String> Ingredient = new Vector<String>();
     private List<String> Qty = new Vector<String>();
@@ -62,7 +62,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(this, R.array.unit, android.R.layout.simple_spinner_item);
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapterSpinner);
-        spinner.setOnItemSelectedListener(this);
 
         etRecipeName = (EditText) findViewById(R.id.recipeName);
         etLink = (EditText) findViewById(R.id.recipeLink);
@@ -129,17 +128,6 @@ public class AddRecipe extends AppCompatActivity implements AdapterView.OnItemSe
         ingredientModel.setQty(Qty.get(ingredientNB));
         ingredientModel.setUnit(Unit.get(ingredientNB));
         ingredientArrayList.add(ingredientModel);
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-        String text = parent.getItemAtPosition(position).toString();
-        Toast.makeText(parent.getContext(), text, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 
     public void writeIntoJSON(String Recipe, String Link, String Ingredient, String Qty, String Unit){

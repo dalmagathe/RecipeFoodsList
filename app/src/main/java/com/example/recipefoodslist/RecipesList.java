@@ -32,7 +32,7 @@ public class RecipesList extends AppCompatActivity {
     ListView lvAllRecipe;
     List<String> recipe = new Vector<String>();
     JSONObject jsonObject = new JSONObject();
-    Map<String, Integer> ingredientQuantity = new HashMap<>();
+    List<String> ingredientQuantityVector = new Vector<String>();
     private Button OpenIngredientsListActivity;
     List<String> selectedRecipeList = new Vector<String>();
 
@@ -72,7 +72,7 @@ public class RecipesList extends AppCompatActivity {
                 if (selectedRecipeList.contains(String.valueOf((lvAllRecipe.getItemAtPosition(i))))) { //.substring(0, String.valueOf((lvAllRecipe.getItemAtPosition(i))).indexOf("\n"))
                     selectedRecipeList.remove(lvAllRecipe.getItemAtPosition(i));
                     ShoppingIngredientList.ingredientNameQty.clear();
-                    ingredientQuantity.clear();
+                    ingredientQuantityVector.clear();
                     ShoppingIngredientList.eraseIngredientsSelectedMemory();
                 } else {
                     selectedRecipeList.add(String.valueOf(lvAllRecipe.getItemAtPosition(i)));
@@ -136,12 +136,13 @@ public class RecipesList extends AppCompatActivity {
                 JSONObject getFirstIngredient = ingredientObj.getJSONObject(size-1);            //Get the i ingredient
                 String getNameIngredient = getFirstIngredient.getString("Name");
                 int getQuantityIngredient = Integer.valueOf(getFirstIngredient.getString("Quantity"));
-                ingredientQuantity.put(getNameIngredient, getQuantityIngredient);
+                String getUnitIngredient = getFirstIngredient.getString("Unit");
+                ingredientQuantityVector.add(getNameIngredient + " " + getQuantityIngredient + " " + getUnitIngredient);
                 --size;
             }
             if(size == 0){
-                ShoppingIngredientList.sumSaveIngredients(ingredientQuantity);
-                ingredientQuantity.clear();
+                ShoppingIngredientList.sumSaveIngredientsList(ingredientQuantityVector);
+                ingredientQuantityVector.clear();
             }
             --nbRecipesSelected;
         }
