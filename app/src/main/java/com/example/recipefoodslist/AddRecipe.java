@@ -44,6 +44,7 @@ public class AddRecipe extends AppCompatActivity {
     String previousRecipe = "";
 
     EditText etRecipeName;
+    EditText etRecipeNb;
     EditText etLink;
     EditText etIngredientName;
     EditText etIngredientQuantity;
@@ -64,6 +65,7 @@ public class AddRecipe extends AppCompatActivity {
         spinner.setAdapter(adapterSpinner);
 
         etRecipeName = (EditText) findViewById(R.id.recipeName);
+        etRecipeNb = (EditText) findViewById(R.id.recipeNb);
         etLink = (EditText) findViewById(R.id.recipeLink);
         etIngredientName = (EditText) findViewById(R.id.ingredientName);
         etIngredientQuantity = (EditText) findViewById(R.id.ingredientQuantity);
@@ -114,7 +116,7 @@ public class AddRecipe extends AppCompatActivity {
                     ingredientAdapter.notifyDataSetChanged();
                     listView.setAdapter(ingredientAdapter);
 
-                    writeIntoJSON(etRecipeName.getText().toString(), etLink.getText().toString(), Ingredient.get(listSize), Qty.get(listSize), Unit.get(listSize));
+                    writeIntoJSON(etRecipeName.getText().toString(), etRecipeNb.getText().toString(),etLink.getText().toString(), Ingredient.get(listSize), Qty.get(listSize), Unit.get(listSize));
                     ++ingredientNB;
                     previousRecipe = etRecipeName.getText().toString();
                 }
@@ -130,9 +132,9 @@ public class AddRecipe extends AppCompatActivity {
         ingredientArrayList.add(ingredientModel);
     }
 
-    public void writeIntoJSON(String Recipe, String Link, String Ingredient, String Qty, String Unit){
+    public void writeIntoJSON(String Recipe, String Nb, String Link, String Ingredient, String Qty, String Unit){
         try {
-            WriteDataJson.main(getExternalFilesDir(null).toString(), Recipe, Link, Ingredient, Qty, Unit);
+            WriteDataJson.main(getExternalFilesDir(null).toString(), Recipe, Nb, Link, Ingredient, Qty, Unit);
         }
         catch (IOException e){
             e.printStackTrace();

@@ -30,7 +30,7 @@ import java.util.Vector;
 
 public class WriteDataJson {
 
-    public static void main(String path, String Recipe, String Link, String Ingredient, String Qty, String Unit) throws IOException, JSONException {
+    public static void main(String path, String Recipe, String Nb, String Link, String Ingredient, String Qty, String Unit) throws IOException, JSONException {
 
         String data ="";
 
@@ -55,7 +55,7 @@ public class WriteDataJson {
 
                 if(!data.isEmpty()){
                     JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
-                    writeNewJSONData(f, jsonObject, Recipe, Link, Ingredient, Qty, Unit);
+                    writeNewJSONData(f, jsonObject, Recipe, Nb, Link, Ingredient, Qty, Unit);
                 }
             }
 
@@ -87,7 +87,7 @@ public class WriteDataJson {
         return objRecipe;
     }
 
-    private static void writeNewJSONData(File f, JSONObject jsonObject, String Recipe, String Link, String Ingredient, String Qty, String Unit) throws JSONException, IOException {
+    private static void writeNewJSONData(File f, JSONObject jsonObject, String Recipe, String Nb, String Link, String Ingredient, String Qty, String Unit) throws JSONException, IOException {
         JSONObject allRecipeObj = jsonObject.getJSONObject("Recipes input");
         if(!(allRecipeObj.has(Recipe))){
 
@@ -100,6 +100,7 @@ public class WriteDataJson {
             testArray.put(objNewIngredient);
 
             JSONObject objAllIngredient = new JSONObject();
+            objAllIngredient.put("Nb", Nb);
             objAllIngredient.put("Link", Link);
             objAllIngredient.put("Ingredients", testArray);
 
