@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="10dp"
     android:orientation="vertical"
-    tools:context=".RecipesList">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView8"
+        android:id="@+id/textView7"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:text="Select the nb of person"
         android:gravity="center"
-        android:text="Select the recipes for the week"
         android:textSize="20sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <ListView
-        android:id="@+id/allRecipeListView"
+        android:id="@+id/listview_spinner"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"
+        android:layout_weight="8"
         android:choiceMode="multipleChoice"
         android:divider="#FFFEB90A"
-        android:dividerHeight="1dp" />
+        android:dividerHeight="1dp" >
+
+    </ListView>
 
     <Button
-        android:id="@+id/openNbSelection"
+        android:id="@+id/ingredientListBtn"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:layout_weight="1"
         android:backgroundTint="#D89E0A"
-        android:text="Select Nb" />
-
+        android:text="Go to the ingredients" />
 </LinearLayout>
