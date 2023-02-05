@@ -286,6 +286,58 @@ public class WriteDataJson {
 
     }
 
+    static public void saveNbJSON(Map<String, String> recipeNbMap, String path){
+
+        String data = "";
+
+        try{
+            File f = new File(path + "/newTestFile.json");
+
+            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            String line;
+
+            while ((line = bufferedReader.readLine())!= null){
+                data = data + line;
+            }
+
+            if(!data.isEmpty()){
+                JSONObject objAllRecipes= new JSONObject();
+                JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
+                if(jsonObject.has("Nb selected")){
+                    jsonObject.remove("Nb selected");
+                }
+                for (Map.Entry<String, String> pair : recipeNbMap.entrySet()) {
+                    if(jsonObject.has("Nb selected")){
+                        JSONObject objNewElement = new JSONObject();
+                        objNewElement.put(pair.getKey(), pair.getValue());
+
+                        jsonObject.getJSONArray("Nb selected").put(objNewElement);
+                    }
+                    else{
+                        JSONObject objNewElement = new JSONObject();
+                        objNewElement.put(pair.getKey(), pair.getValue());
+
+                        JSONArray testArray = new JSONArray();
+                        testArray.put(objNewElement);
+
+                        jsonObject.put("Nb selected", testArray);
+                    }
+                }
+
+                f = new File(path + "/newTestFile.json");
+                FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
+                file.write(jsonObject.toString(2));
+                file.flush();
+                file.close();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
     static public void removeElementJSON (String path, String name){
         String data = "";
 
