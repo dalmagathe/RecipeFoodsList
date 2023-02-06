@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 public class ReadDataJson {
@@ -95,6 +97,21 @@ public class ReadDataJson {
             JSONArray jsonArray = jsonObject.getJSONArray("Elements selected");
             for (int i=0; i < jsonArray.length(); i++) {
                 elementsSelected.add((String) jsonArray.get(i));
+            }
+        }
+        return elementsSelected;
+    }
+
+    public static Map<String, String> getNbSelected(String path) throws JSONException {
+        Map<String, String> elementsSelected = new HashMap<>();
+        JSONObject jsonObject = getAllJsonObj(path);
+        if(jsonObject.has("Nb selected")){
+            JSONArray jsonArray = jsonObject.getJSONArray("Nb selected");
+            for (int i=0; i < jsonArray.length(); i++) {
+                JSONObject jsonObj = jsonArray.getJSONObject(i);
+                String name = jsonObj.getString("Name recipe");
+                String nb = jsonObj.getString("Nb");
+                elementsSelected.put(name, nb);
             }
         }
         return elementsSelected;

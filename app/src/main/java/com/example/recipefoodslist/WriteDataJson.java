@@ -310,13 +310,15 @@ public class WriteDataJson {
                 for (Map.Entry<String, String> pair : recipeNbMap.entrySet()) {
                     if(jsonObject.has("Nb selected")){
                         JSONObject objNewElement = new JSONObject();
-                        objNewElement.put(pair.getKey(), pair.getValue());
+                        objNewElement.put("Name recipe", pair.getKey());
+                        objNewElement.put("Nb", pair.getValue());
 
                         jsonObject.getJSONArray("Nb selected").put(objNewElement);
                     }
                     else{
                         JSONObject objNewElement = new JSONObject();
-                        objNewElement.put(pair.getKey(), pair.getValue());
+                        objNewElement.put("Name recipe", pair.getKey());
+                        objNewElement.put("Nb", pair.getValue());
 
                         JSONArray testArray = new JSONArray();
                         testArray.put(objNewElement);

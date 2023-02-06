@@ -32,6 +32,9 @@ public class SelectNb extends AppCompatActivity {
     private SelectNbAdapter adapter;
     private static List<String> selectedRecipeList = new Vector<String>();
     private static Map<String, String> recipesNbPeople = new HashMap();
+    private List<String> nbSelected = new Vector<>();
+    private List<String> name = new ArrayList<>();
+    private List<String> spinnerNb = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,13 +46,9 @@ public class SelectNb extends AppCompatActivity {
         lvSpinner = (ListView) findViewById(R.id.listview_spinner);
         bt = (Button) findViewById(R.id.ingredientListBtn);
 
-        ArrayList<String> mSpinnerData = new ArrayList<>();
-        mSpinnerData.add("1");
-        mSpinnerData.add("2");
-        mSpinnerData.add("3");
-        mSpinnerData.add("4");
+        try {setMapRecipeSpinner();} catch (JSONException e) {throw new RuntimeException(e);}
 
-        adapter = new SelectNbAdapter(selectedRecipeList, mSpinnerData, this);
+        adapter = new SelectNbAdapter(this, name, spinnerNb);
         lvSpinner.setAdapter(adapter);
 
         onBtnClick();
@@ -82,5 +81,24 @@ public class SelectNb extends AppCompatActivity {
 
     public static void getRecipesSelected(List<String> selectedRecipeListInput) {
         selectedRecipeList = selectedRecipeListInput;
+    }
+
+    private void setMapRecipeSpinner() throws JSONException {
+        ArrayList<String> mSpinnerData = new ArrayList<>();
+        Map<String,String> recipeNb = ReadDataJson.getNbSelected(String.valueOf(getExternalFilesDir(null)));
+
+        if(recipeNb.isEmpty()){
+            name = selectedRecipeList;
+            for (int j = 1; j < 5; ++j){{spinnerNb.add(String.valueOf(j));}}
+        }
+        else{
+            for (Map.Entry<String, String> pair : recipeNb.entrySet()) {
+                name.add(pair.getKey());
+
+                int nbSelect = Integer.parseInt(pair.getValue());   //Previous nb selected by the user
+                spinnerNb.add(String.valueOf(nbSelect));
+                for (int j = 1; j < 5; ++j){if (j != nbSelect) {spinnerNb.add(String.valueOf(j));}}
+            }
+        }
     }
 }
