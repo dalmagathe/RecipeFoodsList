@@ -84,7 +84,6 @@ public class SelectNb extends AppCompatActivity {
     }
 
     private void setMapRecipeSpinner() throws JSONException {
-        ArrayList<String> mSpinnerData = new ArrayList<>();
         Map<String,String> recipeNb = ReadDataJson.getNbSelected(String.valueOf(getExternalFilesDir(null)));
 
         if(recipeNb.isEmpty()){

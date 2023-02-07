@@ -45,7 +45,7 @@
             android:layout_height="0dp"
             android:layout_gravity="center"
             android:layout_weight="0.05"
-            android:background="#FFA88C" />
+            android:background="#FFB8CF" />
 
         <TextView
             android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                     android:layout_height="0dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="1.2"
-                    android:backgroundTint="#FFFF5722"
+                    android:backgroundTint="#FFE92061"
                     android:insetLeft="50dp"
                     android:insetTop="10dp"
                     android:insetRight="50dp"

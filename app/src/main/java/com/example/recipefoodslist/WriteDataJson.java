@@ -176,7 +176,6 @@ public class WriteDataJson {
 
             if(!data.isEmpty()){
                 JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
-
                 JSONArray jsonArray = new JSONArray();
                 for (int i=0; i < selectedIngredientsList.size(); i++) {
                     jsonArray.put(selectedIngredientsList.get(i));

@@ -79,12 +79,21 @@ public class ShoppingIngredientList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SparseBooleanArray arrayItemChecked = lvAllIngredient.getCheckedItemPositions();
-                for (int j = 0; j < adapter.getCount(); j++) {
-                    if (arrayItemChecked.get(i) && !(ingredientSelected.contains(String.valueOf((lvAllIngredient.getItemAtPosition(i)))))) {
-                        ingredientSelected.add(String.valueOf((lvAllIngredient.getItemAtPosition(i))));
+                if (arrayItemChecked.get(i)) {
+                    Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
+                    Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(i))));
+                    if (m.matches()) {
+                        ingredientSelected.add(m.group(1));
                     }
                     else {
-                        ingredientSelected.remove(lvAllIngredient.getItemAtPosition(i));
+                        ingredientSelected.add("");
+                    }
+                }
+                else {
+                    Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
+                    Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(i))));
+                    if (m.matches()) {
+                        ingredientSelected.remove(m.group(1));
                     }
                 }
             }
@@ -153,7 +162,6 @@ public class ShoppingIngredientList extends AppCompatActivity {
 
         onBtnClick();
     }
-
 
     private void onBtnClick(){
         btn.setOnClickListener(new View.OnClickListener() {
@@ -229,11 +237,20 @@ public class ShoppingIngredientList extends AppCompatActivity {
     public void checkRecipesSelectedFromJson() throws JSONException {
         //Get the recipes selected from the JSON
         List<String> ingredientsSelectedList = null;
+        String name;
         ingredientsSelectedList = ReadDataJson.getIngredientsSelected(String.valueOf(getExternalFilesDir(null)));
         //Check the recipes selected from the JSON on the listView
         for (int i = 0; i < ingredientsSelectedList.size(); ++i) {
             for (int j = 0; j < lvAllIngredient.getAdapter().getCount(); ++j) {
-                if ((String.valueOf((lvAllIngredient.getItemAtPosition(j)))).equals(ingredientsSelectedList.get(i))) {
+                Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
+                Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(j))));
+                if (m.matches()) {
+                    name = m.group(1);
+                }
+                else {
+                    name ="";
+                }
+                if (name.equals(ingredientsSelectedList.get(i))) {
                     lvAllIngredient.setItemChecked(j, true);
                 }
             }
