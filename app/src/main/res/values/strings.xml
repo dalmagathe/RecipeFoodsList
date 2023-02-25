@@ -2,6 +2,7 @@
     <string name="app_name">RecipeFoodsList</string>
 
     <string-array name="unit">
+        <item></item>
         <item>gr</item>
         <item>ml</item>
         <item>st</item>

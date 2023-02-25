@@ -1,6 +1,7 @@
 package com.example.recipefoodslist;
 
 import android.content.Context;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,16 +9,18 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IngredientAdapter extends BaseAdapter {
 
     private Context context;
-    private ArrayList<Ingredient> ingredientArrayList;
+    Map<String, Pair<String, String>> ingredientMap = new HashMap<>();
 
-    public IngredientAdapter(Context context, ArrayList<Ingredient> ingredientArrayList) {
+    public IngredientAdapter(Context context, Map<String, Pair<String, String>> ingredientMap) {
 
         this.context = context;
-        this.ingredientArrayList = ingredientArrayList;
+        this.ingredientMap = ingredientMap;
     }
 
     @Override
@@ -32,12 +35,12 @@ public class IngredientAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return ingredientArrayList.size();
+        return ingredientMap.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return ingredientArrayList.get(position);
+        return ingredientMap.get(position);
     }
 
     @Override
@@ -65,9 +68,11 @@ public class IngredientAdapter extends BaseAdapter {
             holder = (ViewHolder)convertView.getTag();
         }
 
-        holder.tvProduct.setText(ingredientArrayList.get(position).getIngredient());
-        holder.tvQty.setText(String.valueOf(ingredientArrayList.get(position).getQty()));
-        holder.tvUnit.setText(String.valueOf(ingredientArrayList.get(position).getUnit()));
+        String name = ingredientMap.keySet().toArray()[position].toString();
+
+        holder.tvProduct.setText(name);
+        holder.tvQty.setText(ingredientMap.get(name).first);
+        holder.tvUnit.setText(String.valueOf(ingredientMap.get(name).second));
 
         return convertView;
     }

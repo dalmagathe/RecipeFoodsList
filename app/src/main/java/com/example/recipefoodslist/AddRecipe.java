@@ -1,55 +1,38 @@
 package com.example.recipefoodslist;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
-import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.util.Pair;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-
-import com.example.recipefoodslist.WriteDataJson;
-
+import java.util.HashMap;
+import java.util.Map;
 import org.json.JSONException;
 
 public class AddRecipe extends AppCompatActivity {
 
-    private List<String> Ingredient = new Vector<String>();
-    private List<String> Qty = new Vector<String>();
-    private List<String> Unit = new Vector<String>();
-    private ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>(); //arrayList
-    private ListView listView; //lv
+    private ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
+    private Map<String, Pair<String, String>> ingredientMap= new HashMap<>();
+    private ListView listView;
     private IngredientAdapter ingredientAdapter;
-    private int ingredientNB = 0;
 
-    String previousRecipe = "";
-
-    EditText etRecipeName;
-    EditText etRecipeNb;
-    EditText etLink;
-    EditText etIngredientName;
-    EditText etIngredientQuantity;
+    EditText etRecipeName, etRecipeNb, etLink, etIngredientName, etIngredientQuantity;
     Spinner etIngredientUnit;
     Button bt;
+    CheckBox check;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,16 +55,32 @@ public class AddRecipe extends AppCompatActivity {
         etIngredientUnit = (Spinner) findViewById(R.id.spinnerUnit);
         bt = (Button) findViewById(R.id.addIngredientBtn);
         listView = findViewById(R.id.listView);
+        check = findViewById(R.id.checkLink);
 
-        //populateList(ingredientArrayList);
-        //adapter
-        ingredientAdapter = new IngredientAdapter(AddRecipe.this,ingredientArrayList);
-        //listView.setAdapter(ingredientAdapter);
+        ingredientAdapter = new IngredientAdapter(AddRecipe.this,ingredientMap);
 
         onBtnClick();
+        onCheck();
 
     }
 
+    public void onCheck(){
+        check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (check.isChecked())
+                {
+                    etLink.setFocusableInTouchMode(true);
+                    etLink.setBackgroundTintList(ColorStateList.valueOf(0xFFFF5722));
+                }
+                else{
+                    etLink.setFocusable(false);
+                    etLink.setBackgroundTintList(ColorStateList.valueOf(0xFFFFFFFF));
+                }
+            }
+        });
+
+    }
     public void onBtnClick(){
         etRecipeName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,39 +96,34 @@ public class AddRecipe extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 listView.setAdapter(null);
-                Ingredient.clear();
-                Qty.clear();
-                Unit.clear();
-                ingredientArrayList.clear();
-                ingredientNB=0;
+                ingredientMap.clear();
             }
         });
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int listSize = Ingredient.size();
-                if((listSize == 0) || ((listSize > 0) && (Ingredient.contains(etIngredientName.getText().toString()) == false))){
-                    Ingredient.add(etIngredientName.getText().toString());
-                    Qty.add(etIngredientQuantity.getText().toString());
-                    Unit.add(etIngredientUnit.getSelectedItem().toString());
-                    populateList(ingredientArrayList);
+                if((etIngredientName.getText().toString()).equals("") || (etIngredientQuantity.getText().toString().equals("")) || (etIngredientUnit.getSelectedItem().toString().equals(""))){
+                    AlertDialog dialogIngredientNull = new AlertDialog.Builder(AddRecipe.this).create();
+                    dialogIngredientNull.setTitle("Warning!");
+                    dialogIngredientNull.setMessage("You have to fill all information");
+                    dialogIngredientNull.show();
+                }
+                else if(ingredientMap.isEmpty() || ingredientMap.containsKey(etIngredientName.getText().toString())==false){
+                    ingredientMap.put(etIngredientName.getText().toString(),
+                                    new Pair<>(etIngredientQuantity.getText().toString(), etIngredientUnit.getSelectedItem().toString()));
+
                     ingredientAdapter.notifyDataSetChanged();
                     listView.setAdapter(ingredientAdapter);
 
-                    writeIntoJSON(etRecipeName.getText().toString(), etRecipeNb.getText().toString(),etLink.getText().toString(), Ingredient.get(listSize), Qty.get(listSize), Unit.get(listSize));
-                    ++ingredientNB;
-                    previousRecipe = etRecipeName.getText().toString();
+                    writeIntoJSON(etRecipeName.getText().toString(),
+                                  etRecipeNb.getText().toString(),
+                                  etLink.getText().toString(),
+                                  etIngredientName.getText().toString(),
+                                  etIngredientQuantity.getText().toString(),
+                                  etIngredientUnit.getSelectedItem().toString());
                 }
             }
         });
-    }
-
-    private void populateList(ArrayList<Ingredient> ingredientArrayList){
-        Ingredient ingredientModel = new Ingredient();
-        ingredientModel.setIngredient(Ingredient.get(ingredientNB));
-        ingredientModel.setQty(Qty.get(ingredientNB));
-        ingredientModel.setUnit(Unit.get(ingredientNB));
-        ingredientArrayList.add(ingredientModel);
     }
 
     public void writeIntoJSON(String Recipe, String Nb, String Link, String Ingredient, String Qty, String Unit){
