@@ -24,15 +24,14 @@ import org.json.JSONException;
 
 public class AddRecipe extends AppCompatActivity {
 
-    private ArrayList<Ingredient> ingredientArrayList = new ArrayList<Ingredient>();
-    private Map<String, Pair<String, String>> ingredientMap= new HashMap<>();
-    private ListView listView;
-    private IngredientAdapter ingredientAdapter;
+    Map<String, Pair<String, String>> ingredientMap= new HashMap<>();
+    ListView listView;
+    IngredientAdapter ingredientAdapter;
 
     EditText etRecipeName, etRecipeNb, etLink, etIngredientName, etIngredientQuantity;
     Spinner etIngredientUnit;
-    Button bt;
-    CheckBox check;
+    Button btAddIngredient, btnAddRecipe;
+    CheckBox checkLink;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,22 +52,22 @@ public class AddRecipe extends AppCompatActivity {
         etIngredientName = (EditText) findViewById(R.id.ingredientName);
         etIngredientQuantity = (EditText) findViewById(R.id.ingredientQuantity);
         etIngredientUnit = (Spinner) findViewById(R.id.spinnerUnit);
-        bt = (Button) findViewById(R.id.addIngredientBtn);
+        btAddIngredient = (Button) findViewById(R.id.addIngredientBtn);
+        btnAddRecipe = (Button) findViewById(R.id.btnAddRecipe);
         listView = findViewById(R.id.listView);
-        check = findViewById(R.id.checkLink);
+        checkLink = findViewById(R.id.checkLink);
 
         ingredientAdapter = new IngredientAdapter(AddRecipe.this,ingredientMap);
 
         onBtnClick();
         onCheck();
-
     }
 
     public void onCheck(){
-        check.setOnClickListener(new View.OnClickListener() {
+        checkLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (check.isChecked())
+                if (checkLink.isChecked())
                 {
                     etLink.setFocusableInTouchMode(true);
                     etLink.setBackgroundTintList(ColorStateList.valueOf(0xFFFF5722));
@@ -81,6 +80,7 @@ public class AddRecipe extends AppCompatActivity {
         });
 
     }
+
     public void onBtnClick(){
         etRecipeName.addTextChangedListener(new TextWatcher() {
             @Override
@@ -99,7 +99,7 @@ public class AddRecipe extends AppCompatActivity {
                 ingredientMap.clear();
             }
         });
-        bt.setOnClickListener(new View.OnClickListener() {
+        btAddIngredient.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if((etIngredientName.getText().toString()).equals("") || (etIngredientQuantity.getText().toString().equals("")) || (etIngredientUnit.getSelectedItem().toString().equals(""))){
@@ -111,30 +111,27 @@ public class AddRecipe extends AppCompatActivity {
                 else if(ingredientMap.isEmpty() || ingredientMap.containsKey(etIngredientName.getText().toString())==false){
                     ingredientMap.put(etIngredientName.getText().toString(),
                                     new Pair<>(etIngredientQuantity.getText().toString(), etIngredientUnit.getSelectedItem().toString()));
-
                     ingredientAdapter.notifyDataSetChanged();
                     listView.setAdapter(ingredientAdapter);
-
-                    writeIntoJSON(etRecipeName.getText().toString(),
-                                  etRecipeNb.getText().toString(),
-                                  etLink.getText().toString(),
-                                  etIngredientName.getText().toString(),
-                                  etIngredientQuantity.getText().toString(),
-                                  etIngredientUnit.getSelectedItem().toString());
                 }
             }
         });
-    }
 
-    public void writeIntoJSON(String Recipe, String Nb, String Link, String Ingredient, String Qty, String Unit){
-        try {
-            WriteDataJson.main(getExternalFilesDir(null).toString(), Recipe, Nb, Link, Ingredient, Qty, Unit);
-        }
-        catch (IOException e){
-            e.printStackTrace();
-        }
-        catch (JSONException e){
-            e.printStackTrace();
-        }
+        btnAddRecipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    WriteDataJson.addDataJson(getExternalFilesDir(null).toString(),
+                            etRecipeName.getText().toString(),
+                            etRecipeNb.getText().toString(),
+                            etLink.getText().toString(),
+                            ingredientMap);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 }

@@ -67,6 +67,32 @@
             android:textSize="16sp" />
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/checkLink"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Link needed?"
+        android:textColor="#838383"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/recipeLink"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2"
+        android:backgroundTint="@color/white"
+        android:ems="10"
+        android:focusable="false"
+        android:inputType="textPersonName"
+        android:textAlignment="center"
+        android:textSize="16sp"
+        android:textStyle="italic" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -183,32 +209,14 @@
         </LinearLayout>
     </FrameLayout>
 
-    <CheckBox
-        android:id="@+id/checkLink"
+    <Button
+        android:id="@+id/btnAddRecipe"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="50dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="Link needed?"
-        android:textColor="#838383"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/recipeLink"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.2"
-        android:backgroundTint="@color/white"
-        android:ems="10"
-        android:focusable="false"
-        android:inputType="textPersonName"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="italic" />
+        android:layout_weight="1.5"
+        android:text="Add recipe"
+        android:backgroundTint="#FFFF5722"
+        android:textColor="@color/white"/>
 
 
 </LinearLayout>

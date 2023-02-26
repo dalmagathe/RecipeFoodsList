@@ -6,6 +6,9 @@ import static java.lang.System.out;
 import android.content.Context;
 import android.util.JsonReader;
 import android.util.JsonWriter;
+import android.util.Pair;
+
+import androidx.appcompat.app.AlertDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +33,7 @@ import java.util.Vector;
 
 public class WriteDataJson {
 
-    public static void main(String path, String Recipe, String Nb, String Link, String Ingredient, String Qty, String Unit) throws IOException, JSONException {
+    public static void addDataJson(String path, String Recipe, String Nb, String Link, Map<String, Pair<String, String>> ingredient) throws IOException, JSONException {
 
         String data ="";
 
@@ -39,7 +42,7 @@ public class WriteDataJson {
 
             if(!(f.exists())){
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), true);
-                JSONObject objAllRecipe = createJSON(Recipe, Link, Ingredient, Qty, Unit);
+                JSONObject objAllRecipe = createJSON(Recipe, Link, Nb, ingredient);
                 file.write(objAllRecipe.toString(2));
                 file.flush();
                 file.close();
@@ -55,7 +58,7 @@ public class WriteDataJson {
 
                 if(!data.isEmpty()){
                     JSONObject jsonObject = new JSONObject(data);                           //Get JSON file
-                    writeNewJSONData(f, jsonObject, Recipe, Nb, Link, Ingredient, Qty, Unit);
+                    writeNewJSONData(f, jsonObject, Recipe, Link, Nb, ingredient);
                 }
             }
 
@@ -65,16 +68,19 @@ public class WriteDataJson {
         }
     }
 
-    private static JSONObject createJSON(String Recipe, String Link, String Ingredient, String Qty, String Unit) throws JSONException {
+    private static JSONObject createJSON(String Recipe, String Link, String Nb, Map<String, Pair<String, String>> ingredient) throws JSONException {
         JSONArray testArray = new JSONArray();
 
-        JSONObject objNewIngredient = new JSONObject();
-        objNewIngredient.put("Name", Ingredient);
-        objNewIngredient.put("Quantity", Qty);
-        objNewIngredient.put("Unit", Unit);
-        testArray.put(objNewIngredient);
+        for (Map.Entry<String, Pair<String, String>> pair : ingredient.entrySet()) {
+            JSONObject objNewIngredient = new JSONObject();
+            objNewIngredient.put("Name", pair.getKey());
+            objNewIngredient.put("Quantity", pair.getValue().first);
+            objNewIngredient.put("Unit", pair.getValue().second);
+            testArray.put(objNewIngredient);
+        }
 
         JSONObject objAllIngredient = new JSONObject();
+        objAllIngredient.put("Nb", Nb);
         objAllIngredient.put("Link", Link);
         objAllIngredient.put("Ingredients", testArray);
 
@@ -87,17 +93,18 @@ public class WriteDataJson {
         return objRecipe;
     }
 
-    private static void writeNewJSONData(File f, JSONObject jsonObject, String Recipe, String Nb, String Link, String Ingredient, String Qty, String Unit) throws JSONException, IOException {
+    private static void writeNewJSONData(File f, JSONObject jsonObject, String Recipe, String Link, String Nb, Map<String, Pair<String, String>> ingredient) throws JSONException, IOException {
         JSONObject allRecipeObj = jsonObject.getJSONObject("Recipes input");
         if(!(allRecipeObj.has(Recipe))){
-
-            JSONObject objNewIngredient = new JSONObject();
-            objNewIngredient.put("Name", Ingredient);
-            objNewIngredient.put("Quantity", Qty);
-            objNewIngredient.put("Unit", Unit);
-
             JSONArray testArray = new JSONArray();
-            testArray.put(objNewIngredient);
+
+            for (Map.Entry<String, Pair<String, String>> pair : ingredient.entrySet()) {
+                JSONObject objNewIngredient = new JSONObject();
+                objNewIngredient.put("Name", pair.getKey());
+                objNewIngredient.put("Quantity", pair.getValue().first);
+                objNewIngredient.put("Unit", pair.getValue().second);
+                testArray.put(objNewIngredient);
+            }
 
             JSONObject objAllIngredient = new JSONObject();
             objAllIngredient.put("Nb", Nb);
@@ -107,12 +114,7 @@ public class WriteDataJson {
             allRecipeObj.put(Recipe, objAllIngredient);
         }
         else{
-            JSONObject objNewIngredient = new JSONObject();
-            objNewIngredient.put("Name", Ingredient);
-            objNewIngredient.put("Quantity", Qty);
-            objNewIngredient.put("Unit", Unit);
 
-            allRecipeObj.getJSONObject(Recipe).getJSONArray("Ingredients").put(objNewIngredient);
         }
 
         FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
