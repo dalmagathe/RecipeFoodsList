@@ -102,16 +102,29 @@ public class ReadDataJson {
         return elementsSelected;
     }
 
-    public static Map<String, String> getNbSelected(String path) throws JSONException {
+    public static Map<String, String> getRecipeNb(String path) throws JSONException {
         Map<String, String> elementsSelected = new HashMap<>();
         JSONObject jsonObject = getAllJsonObj(path);
+        //Look for the recipes selected
+        if(jsonObject.has("Recipes selected")){
+            JSONObject allRecipesInput = jsonObject.getJSONObject("Recipes input");
+            JSONArray jsonArray = jsonObject.getJSONArray("Recipes selected");
+            for (int i=0; i < jsonArray.length(); i++) {
+                JSONObject recipe = allRecipesInput.getJSONObject((String) jsonArray.get(i));
+                elementsSelected.put((String) jsonArray.get(i), (String) recipe.get("Nb"));
+            }
+        }
+        //Look for previous nb selected and change it into the MAP
         if(jsonObject.has("Nb selected")){
             JSONArray jsonArray = jsonObject.getJSONArray("Nb selected");
             for (int i=0; i < jsonArray.length(); i++) {
                 JSONObject jsonObj = jsonArray.getJSONObject(i);
                 String name = jsonObj.getString("Name recipe");
                 String nb = jsonObj.getString("Nb");
-                elementsSelected.put(name, nb);
+
+                if(elementsSelected.containsKey(name)){
+                    elementsSelected.put(name, nb);
+                }
             }
         }
         return elementsSelected;

@@ -63,7 +63,7 @@ public class AddRecipe extends AppCompatActivity {
         onCheck();
     }
 
-    public void onCheck(){
+    private void onCheck(){
         checkLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -81,7 +81,7 @@ public class AddRecipe extends AppCompatActivity {
 
     }
 
-    public void onBtnClick(){
+    private void onBtnClick(){
         etRecipeName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
