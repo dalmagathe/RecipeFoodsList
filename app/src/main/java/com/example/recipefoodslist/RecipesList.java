@@ -112,7 +112,6 @@ public class RecipesList extends AppCompatActivity {
     }
 
     private void openSelectNbActivity(){
-        SelectNb.getRecipesSelected(selectedRecipesList); //Update the recipes selected byt the user
         Intent intent = new Intent(this, SelectNb.class);
         startActivity(intent);
     }

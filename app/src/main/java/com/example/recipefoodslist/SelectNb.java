@@ -68,11 +68,6 @@ public class SelectNb extends AppCompatActivity {
         recipesNbPeople = SelectNbAdapter.getMapRecipeNb();
     }
 
-    public static Map<String, String> getNbSelected() {
-        Map<String, String> recipesNbPeopleOutput = recipesNbPeople;
-        return recipesNbPeopleOutput;
-    }
-
     private void setRecipeNbSpinner() throws JSONException {
         Map<String,String> recipeNb = ReadDataJson.getRecipeNb(String.valueOf(getExternalFilesDir(null)));
 

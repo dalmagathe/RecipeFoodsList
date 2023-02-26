@@ -36,9 +36,9 @@ import javax.microedition.khronos.egl.EGLDisplay;
 public class ShoppingIngredientList extends AppCompatActivity {
 
     static ListView lvAllIngredient, lvElementAdded;
-    static List<String> ingredientNameQty, ingredientSelected, elementSelected, elementAddedList = new Vector<>();
-    private List<String> ingredientQtyVector = new Vector<>();
     private Button btn;
+    static List<String> ingredientSelected, elementSelected, elementAddedList = new Vector<>();
+    private List<String> ingredientQtyVector = new Vector<>();
     ArrayAdapter<String> adapter, adapterElementAdded;
 
     @Override
@@ -55,7 +55,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
 
         //Get the ingredients from recipes before display them
         try {getRecipesIngredients();} catch (JSONException e) {throw new RuntimeException(e);}
-        //Get the elements added before display them
+        //Get the elements added
         try {addPreviousElementAddedToList();} catch (JSONException e) {e.printStackTrace();}
 
         //List view adapters
@@ -65,7 +65,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         lvElementAdded.setAdapter(adapterElementAdded);
 
         //Check the selected recipes from the JSON in the listVIew
-        try {checkRecipesSelectedFromJson();checkElementsSelectedFromJson();} catch (JSONException e) {e.printStackTrace();}
+        try {selectIngredients();selectElements();} catch (JSONException e) {e.printStackTrace();}
 
         lvAllIngredient.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -83,6 +83,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 }
                 else {
                     Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
+                    String test = String.valueOf((lvAllIngredient.getItemAtPosition(i)));
                     Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(i))));
                     if (m.matches()) {
                         ingredientSelected.remove(m.group(1));
@@ -204,11 +205,36 @@ public class ShoppingIngredientList extends AppCompatActivity {
         try {
             WriteDataJson.saveIngredientSelectedJSON(ingredientSelected, getExternalFilesDir(null).toString());
             WriteDataJson.saveElementSelectedJSON(elementSelected, getExternalFilesDir(null).toString());
-            ingredientQtyVector.clear();
+            if(!ingredientQtyVector.isEmpty()){ingredientQtyVector.clear();}
+            if(!ingredientSelected.isEmpty()){ingredientSelected.clear();}
+            if(!elementSelected.isEmpty()){elementSelected.clear();}
+            if(!elementAddedList.isEmpty()){elementAddedList.clear();}
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void getRecipesIngredients() throws JSONException {
+        JSONObject allRecipes = ReadDataJson.getRecipesInput(getExternalFilesDir(null).toString()); //Get "Recipes input" from JSON
+        Map<String, String> recipesNbSelected = ReadDataJson.getRecipeNbSelected(getExternalFilesDir(null).toString()); //Get the recipes + number selected by the user
+        for (Map.Entry<String, String> pair : recipesNbSelected.entrySet()) {
+            String recipeName = pair.getKey();                            //Get the recipe selected by the user
+            JSONObject recipeObj = allRecipes.getJSONObject(recipeName);  //Search for the recipe in JSON file
+            int nbSelected = Integer.parseInt(pair.getValue());                //Get the selected nb of people for the recipe
+            int nbInitial = Integer.parseInt(recipeObj.getString("Nb"));  //Get the initial nb of people for the recipe
+
+            // Get the correct quantity + ingredients' name + unit
+            JSONArray recipeIngredientsObj = recipeObj.getJSONArray("Ingredients");           //Get the ingredients
+            int ingredientNbr = recipeIngredientsObj.length();
+            while (ingredientNbr != 0){
+                JSONObject getIngredient = recipeIngredientsObj.getJSONObject(ingredientNbr-1);   //Get the i ingredient
+                String ingredientQuantity = getIngredient.getString("Quantity");
+                float ingredientQuantityOp = ((Integer.valueOf(ingredientQuantity)) * 1.0f / nbInitial) * nbSelected;
+                ingredientQtyVector.add(getIngredient.getString("Name") + " " + ingredientQuantityOp + " " + getIngredient.getString("Unit"));
+                --ingredientNbr;
+            }
         }
     }
 
@@ -222,13 +248,12 @@ public class ShoppingIngredientList extends AppCompatActivity {
         }
     }
 
-    public void checkRecipesSelectedFromJson() throws JSONException {
+    public void selectIngredients() throws JSONException {
         //Get the recipes selected from the JSON
-        List<String> ingredientsSelectedList = null;
         String name;
-        ingredientsSelectedList = ReadDataJson.getIngredientsSelected(String.valueOf(getExternalFilesDir(null)));
-        //Check the recipes selected from the JSON on the listView
-        for (int i = 0; i < ingredientsSelectedList.size(); ++i) {
+        ingredientSelected = ReadDataJson.getIngredientsSelected(String.valueOf(getExternalFilesDir(null)));
+
+        for (int i = 0; i < ingredientSelected.size(); ++i) {
             for (int j = 0; j < lvAllIngredient.getAdapter().getCount(); ++j) {
                 Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
                 Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(j))));
@@ -238,51 +263,24 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 else {
                     name ="";
                 }
-                if (name.equals(ingredientsSelectedList.get(i))) {
+                if (name.equals(ingredientSelected.get(i))) {
                     lvAllIngredient.setItemChecked(j, true);
                 }
             }
         }
     }
 
-    public void checkElementsSelectedFromJson() throws JSONException {
+    public void selectElements() throws JSONException {
         //Get the recipes selected from the JSON
-        List<String> elementsSelectedList = null;
-        elementsSelectedList = ReadDataJson.getElementsSelected(String.valueOf(getExternalFilesDir(null)));
+        elementSelected = ReadDataJson.getElementsSelected(String.valueOf(getExternalFilesDir(null)));
         //Check the recipes selected from the JSON on the listView
-        for (int i = 0; i < elementsSelectedList.size(); ++i) {
+        for (int i = 0; i < elementSelected.size(); ++i) {
             for (int j = 0; j < lvElementAdded.getAdapter().getCount(); ++j) {
-                if ((String.valueOf((lvElementAdded.getItemAtPosition(j)))).equals(elementsSelectedList.get(i))) {
+                if ((String.valueOf((lvElementAdded.getItemAtPosition(j)))).equals(elementSelected.get(i))) {
                     lvElementAdded.setItemChecked(j, true);
                 }
             }
         }
     }
 
-    private void getRecipesIngredients() throws JSONException {
-        JSONObject jsonObject = ReadDataJson.getRecipesInput(getExternalFilesDir(null).toString()); //Get "Recipes input" from JSON
-        Map<String, String> recipesNbSelected = SelectNb.getNbSelected();                                //Get the recipes + number selected by the user
-        for (Map.Entry<String, String> pair : recipesNbSelected.entrySet()) {
-            String recipe = pair.getKey();                            //Get the recipe selected by the user
-            JSONObject recipeObj = jsonObject.getJSONObject(recipe);  //Search for the recipe in JSON file
-            int nbSelected = Integer.parseInt(pair.getValue());                //Get the selected nb of people for the recipe
-            int nbInitial = Integer.parseInt(recipeObj.getString("Nb"));  //Get the initial nb of people for the recipe
-
-            // Get the correct quantity + ingredients' name + unit
-            JSONArray recipeIngredientsObj = recipeObj.getJSONArray("Ingredients");           //Get the ingredients
-            int ingredientNbr = recipeIngredientsObj.length();
-            while (recipeIngredientsObj.length() != 0){
-                JSONObject getIngredient = recipeIngredientsObj.getJSONObject(ingredientNbr-1);   //Get the i ingredient
-                String ingredientQuantity = getIngredient.getString("Quantity");
-                float ingredientQuantityOp = ((Integer.valueOf(ingredientQuantity)) * 1.0f / nbInitial) * nbSelected;
-                ingredientQtyVector.add(getIngredient.getString("Name") + " " + ingredientQuantityOp + " " + getIngredient.getString("Unit"));
-                --ingredientNbr;
-            }
-        }
-    }
-
-    static public void eraseIngredientsSelectedMemory(){
-        ingredientSelected.clear();
-        elementSelected.clear();
-    }
 }

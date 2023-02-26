@@ -130,4 +130,19 @@ public class ReadDataJson {
         return elementsSelected;
     }
 
+    public static Map<String, String> getRecipeNbSelected(String path) throws JSONException {
+        Map<String, String> elementsSelected = new HashMap<>();
+        JSONArray jsonArray = getAllJsonObj(path).getJSONArray("Nb selected");
+
+        for (int i=0; i < jsonArray.length(); i++) {
+            JSONObject jsonObj = jsonArray.getJSONObject(i);
+            String name = jsonObj.getString("Name recipe");
+            String nb = jsonObj.getString("Nb");
+
+            elementsSelected.put(name, nb);
+        }
+
+        return elementsSelected;
+    }
+
 }
