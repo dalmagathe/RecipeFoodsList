@@ -1,6 +1,7 @@
 package com.example.recipefoodslist;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PatternMatcher;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONArray;
@@ -39,6 +41,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
     private Button btn;
     static List<String> ingredientSelected, elementSelected, elementAddedList = new Vector<>();
     private List<String> ingredientQtyVector = new Vector<>();
+    private Map<String, Pair<Float, String>> ingredientQtyMap = new HashMap<>();
     ArrayAdapter<String> adapter, adapterElementAdded;
 
     @Override
@@ -57,6 +60,8 @@ public class ShoppingIngredientList extends AppCompatActivity {
         try {getRecipesIngredients();} catch (JSONException e) {throw new RuntimeException(e);}
         //Get the elements added
         try {addPreviousElementAddedToList();} catch (JSONException e) {e.printStackTrace();}
+
+        mapToList();
 
         //List view adapters
         adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientQtyVector);
@@ -108,22 +113,19 @@ public class ShoppingIngredientList extends AppCompatActivity {
         lvElementAdded.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final Dialog dialog = new Dialog(ShoppingIngredientList.this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCancelable(true);
-                dialog.setContentView(R.layout.popup);
-                dialog.show();
+                AlertDialog.Builder dialogIngredientNull = new AlertDialog.Builder(ShoppingIngredientList.this);
+                dialogIngredientNull.setTitle("Information");
+                dialogIngredientNull.setMessage("Do you want to delete this item?");
+                AlertDialog testDial = dialogIngredientNull.create();
 
-                Button btnYes = dialog.findViewById(R.id.yestn);
-                Button btnNo = dialog.findViewById(R.id.noBtn);
 
-                btnYes.setOnClickListener(new View.OnClickListener() {
+                dialogIngredientNull.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        for (int j = 0; j < elementAddedList.size(); ++j){
+                    public void onClick(DialogInterface dialogInterface, int k) {
+                        for (int j = 0; j < elementAddedList.size(); ++j) {
                             String name;
                             String test = lvElementAdded.getItemAtPosition(i).toString();
-                            if (elementAddedList.get(j) == lvElementAdded.getItemAtPosition(i)){
+                            if (elementAddedList.get(j) == lvElementAdded.getItemAtPosition(i)) {
                                 elementAddedList.remove(j);
                                 adapterElementAdded = new ArrayAdapter<String>(ShoppingIngredientList.this, android.R.layout.simple_list_item_multiple_choice, elementAddedList);
                                 lvElementAdded.setAdapter(adapterElementAdded);
@@ -131,24 +133,24 @@ public class ShoppingIngredientList extends AppCompatActivity {
                                 Matcher m = p.matcher(test);
                                 if (m.matches()) {
                                     name = m.group(1);
-                                }
-                                else {
-                                    name ="";
+                                } else {
+                                    name = "";
                                 }
                                 WriteDataJson.removeElementJSON(getExternalFilesDir(null).toString(), name);
-                                dialog.cancel();
+                                testDial.cancel();
                                 break;
                             }
                         }
                     }
                 });
-
-                btnNo.setOnClickListener(new View.OnClickListener() {
+                dialogIngredientNull.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(View view) {
-                        dialog.cancel();
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        testDial.cancel();
                     }
                 });
+
+                dialogIngredientNull.create().show();
                 return false;
             }
         });
@@ -232,9 +234,23 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 JSONObject getIngredient = recipeIngredientsObj.getJSONObject(ingredientNbr-1);   //Get the i ingredient
                 String ingredientQuantity = getIngredient.getString("Quantity");
                 float ingredientQuantityOp = ((Integer.valueOf(ingredientQuantity)) * 1.0f / nbInitial) * nbSelected;
-                ingredientQtyVector.add(getIngredient.getString("Name") + " " + ingredientQuantityOp + " " + getIngredient.getString("Unit"));
+                //ingredientQtyVector.add(getIngredient.getString("Name") + " " + ingredientQuantityOp + " " + getIngredient.getString("Unit"));
+                if (ingredientQtyMap.containsKey(getIngredient.getString("Name"))){
+                    float quantity = ingredientQtyMap.get(getIngredient.getString("Name")).first;
+                    String unit = ingredientQtyMap.get(getIngredient.getString("Name")).second;
+                    ingredientQtyMap.put(getIngredient.getString("Name"), new Pair<>(quantity + ingredientQuantityOp, unit));
+                }
+                else{
+                    ingredientQtyMap.put(getIngredient.getString("Name"), new Pair<>(ingredientQuantityOp, getIngredient.getString("Unit")));
+                }
                 --ingredientNbr;
             }
+        }
+    }
+
+    private void mapToList(){
+        for (Map.Entry<String, Pair<Float, String>> pair : ingredientQtyMap.entrySet()) {
+            ingredientQtyVector.add(pair.getKey() + " " + pair.getValue().first + " " + pair.getValue().second);
         }
     }
 
