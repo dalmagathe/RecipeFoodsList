@@ -32,13 +32,15 @@ import java.util.Map;
 import java.util.Vector;
 
 public class WriteDataJson {
+    
+    static String nameFile = "/recipesData.json";
 
     public static void addDataJson(String path, String Recipe, String Nb, String Link, Map<String, Pair<String, String>> ingredient) throws IOException, JSONException {
 
         String data ="";
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
             if(!(f.exists())){
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), true);
@@ -48,7 +50,7 @@ public class WriteDataJson {
                 file.close();
             }
             else{
-                InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+                InputStream inputStream = new FileInputStream(path + nameFile);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
 
@@ -128,9 +130,9 @@ public class WriteDataJson {
         String data = "";
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
-            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            InputStream inputStream = new FileInputStream(path + nameFile);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
 
@@ -148,7 +150,7 @@ public class WriteDataJson {
 
                 jsonObject.put("Recipes selected", jsonArray);
 
-                f = new File(path + "/newTestFile.json");
+                f = new File(path + nameFile);
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
                 file.write(jsonObject.toString(2));
                 file.flush();
@@ -166,9 +168,9 @@ public class WriteDataJson {
         String data = "";
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
-            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            InputStream inputStream = new FileInputStream(path + nameFile);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
 
@@ -185,7 +187,7 @@ public class WriteDataJson {
 
                 jsonObject.put("Ingredients selected", jsonArray);
 
-                f = new File(path + "/newTestFile.json");
+                f = new File(path + nameFile);
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
                 file.write(jsonObject.toString(2));
                 file.flush();
@@ -203,9 +205,9 @@ public class WriteDataJson {
         String data = "";
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
-            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            InputStream inputStream = new FileInputStream(path + nameFile);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
 
@@ -223,7 +225,7 @@ public class WriteDataJson {
 
                 jsonObject.put("Elements selected", jsonArray);
 
-                f = new File(path + "/newTestFile.json");
+                f = new File(path + nameFile);
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
                 file.write(jsonObject.toString(2));
                 file.flush();
@@ -241,9 +243,9 @@ public class WriteDataJson {
         String data = "";
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
-            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            InputStream inputStream = new FileInputStream(path + nameFile);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
 
@@ -274,7 +276,7 @@ public class WriteDataJson {
                     jsonObject.put("Elements added", testArray);
                 }
 
-                f = new File(path + "/newTestFile.json");
+                f = new File(path + nameFile);
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
                 file.write(jsonObject.toString(2));
                 file.flush();
@@ -292,9 +294,9 @@ public class WriteDataJson {
         String data = "";
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
-            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            InputStream inputStream = new FileInputStream(path + nameFile);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
 
@@ -328,7 +330,7 @@ public class WriteDataJson {
                     }
                 }
 
-                f = new File(path + "/newTestFile.json");
+                f = new File(path + nameFile);
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
                 file.write(jsonObject.toString(2));
                 file.flush();
@@ -345,9 +347,9 @@ public class WriteDataJson {
         String data = "";
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
-            InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+            InputStream inputStream = new FileInputStream(path + nameFile);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String line;
 
@@ -369,7 +371,7 @@ public class WriteDataJson {
 
                 jsonObject.put("Elements added", elementAddedObj);
 
-                f = new File(path + "/newTestFile.json");
+                f = new File(path + nameFile);
                 FileWriter file = new FileWriter(f.getAbsoluteFile(), false);
                 file.write(jsonObject.toString(2));
                 file.flush();

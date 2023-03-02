@@ -1,10 +1,9 @@
 package com.example.recipefoodslist;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.PatternMatcher;
 import android.util.Pair;
 import android.util.SparseBooleanArray;
 import android.view.View;
@@ -33,15 +32,15 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.microedition.khronos.egl.EGLDisplay;
-
 public class ShoppingIngredientList extends AppCompatActivity {
 
-    static ListView lvAllIngredient, lvElementAdded;
-    private Button btn;
-    static List<String> ingredientSelected, elementSelected, elementAddedList = new Vector<>();
-    private List<String> ingredientQtyVector = new Vector<>();
-    private Map<String, Pair<Float, String>> ingredientQtyMap = new HashMap<>();
+    ListView lvAllIngredient, lvElementAdded;
+    Button btnAddingElm;
+    List<String> adapterIngredientsList = new Vector<>();
+    List<String> elementAddedList = new Vector<>();
+    List<String> elementSelected = new Vector<>();
+    List<String> ingredientSelected = new Vector<>();
+    Map<String, Pair<Float, String>> ingredientQtyMap = new HashMap<>();
     ArrayAdapter<String> adapter, adapterElementAdded;
 
     @Override
@@ -52,19 +51,19 @@ public class ShoppingIngredientList extends AppCompatActivity {
         getSupportActionBar().hide();
         setContentView(R.layout.activity_shopping_ingredient_list);
 
-        btn = findViewById(R.id.addElementsBtn);
+        btnAddingElm = findViewById(R.id.addElementsBtn);
         lvAllIngredient = findViewById(R.id.allIngredientView);
         lvElementAdded = findViewById(R.id.elementAddedView);
 
         //Get the ingredients from recipes before display them
         try {getRecipesIngredients();} catch (JSONException e) {throw new RuntimeException(e);}
         //Get the elements added
-        try {addPreviousElementAddedToList();} catch (JSONException e) {e.printStackTrace();}
+        try {getElementAdded();} catch (JSONException e) {e.printStackTrace();}
 
         mapToList();
 
         //List view adapters
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, ingredientQtyVector);
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, adapterIngredientsList);
         lvAllIngredient.setAdapter(adapter);
         adapterElementAdded = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_multiple_choice, elementAddedList);
         lvElementAdded.setAdapter(adapterElementAdded);
@@ -76,9 +75,9 @@ public class ShoppingIngredientList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SparseBooleanArray arrayItemChecked = lvAllIngredient.getCheckedItemPositions();
+                Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
+                Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(i))));
                 if (arrayItemChecked.get(i)) {
-                    Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
-                    Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(i))));
                     if (m.matches()) {
                         ingredientSelected.add(m.group(1));
                     }
@@ -87,9 +86,6 @@ public class ShoppingIngredientList extends AppCompatActivity {
                     }
                 }
                 else {
-                    Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
-                    String test = String.valueOf((lvAllIngredient.getItemAtPosition(i)));
-                    Matcher m = p.matcher(String.valueOf((lvAllIngredient.getItemAtPosition(i))));
                     if (m.matches()) {
                         ingredientSelected.remove(m.group(1));
                     }
@@ -113,31 +109,31 @@ public class ShoppingIngredientList extends AppCompatActivity {
         lvElementAdded.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //Create dialog to remove item
                 AlertDialog.Builder dialogIngredientNull = new AlertDialog.Builder(ShoppingIngredientList.this);
                 dialogIngredientNull.setTitle("Information");
                 dialogIngredientNull.setMessage("Do you want to delete this item?");
-                AlertDialog testDial = dialogIngredientNull.create();
-
+                AlertDialog dialogRemoveElement = dialogIngredientNull.create();
 
                 dialogIngredientNull.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int k) {
                         for (int j = 0; j < elementAddedList.size(); ++j) {
-                            String name;
-                            String test = lvElementAdded.getItemAtPosition(i).toString();
+                            String nameElement;
                             if (elementAddedList.get(j) == lvElementAdded.getItemAtPosition(i)) {
+                                Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
+                                Matcher m = p.matcher(lvElementAdded.getItemAtPosition(i).toString());
+                                if (m.matches()) {
+                                    nameElement = m.group(1);
+                                } else {
+                                    nameElement = "";
+                                }
+                                WriteDataJson.removeElementJSON(getExternalFilesDir(null).toString(), nameElement);
                                 elementAddedList.remove(j);
                                 adapterElementAdded = new ArrayAdapter<String>(ShoppingIngredientList.this, android.R.layout.simple_list_item_multiple_choice, elementAddedList);
                                 lvElementAdded.setAdapter(adapterElementAdded);
-                                Pattern p = Pattern.compile("(\\D*)\\s\\d.*");
-                                Matcher m = p.matcher(test);
-                                if (m.matches()) {
-                                    name = m.group(1);
-                                } else {
-                                    name = "";
-                                }
-                                WriteDataJson.removeElementJSON(getExternalFilesDir(null).toString(), name);
-                                testDial.cancel();
+
+                                dialogRemoveElement.cancel();
                                 break;
                             }
                         }
@@ -146,7 +142,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 dialogIngredientNull.setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        testDial.cancel();
+                        dialogRemoveElement.cancel();
                     }
                 });
 
@@ -155,11 +151,56 @@ public class ShoppingIngredientList extends AppCompatActivity {
             }
         });
 
-        onBtnClick();
+        onBtnAddElmClick();
     }
 
-    private void onBtnClick(){
-        btn.setOnClickListener(new View.OnClickListener() {
+    private void getRecipesIngredients() throws JSONException {
+        JSONObject allRecipes = ReadDataJson.getRecipesInput(getExternalFilesDir(null).toString()); //Get "Recipes input" from JSON
+        Map<String, String> recipesNbSelected = ReadDataJson.getRecipeNbSelected(getExternalFilesDir(null).toString()); //Get the recipes + number selected by the user
+        for (Map.Entry<String, String> pair : recipesNbSelected.entrySet()) {
+            String recipeName = pair.getKey();                            //Get the recipe selected by the user
+            JSONObject recipeObj = allRecipes.getJSONObject(recipeName);  //Search for the recipe in JSON file
+            int nbSelected = Integer.parseInt(pair.getValue());                //Get the selected nb of people for the recipe
+            int nbInitial = Integer.parseInt(recipeObj.getString("Nb"));  //Get the initial nb of people for the recipe
+
+            // Get the correct quantity + ingredients' name + unit
+            JSONArray recipeIngredientsObj = recipeObj.getJSONArray("Ingredients");           //Get the ingredients
+            int ingredientNbr = recipeIngredientsObj.length();
+            while (ingredientNbr != 0){
+                JSONObject getIngredient = recipeIngredientsObj.getJSONObject(ingredientNbr-1);   //Get the i ingredient
+                String ingredientQuantity = getIngredient.getString("Quantity");
+                float ingredientQuantityOp = ((Integer.valueOf(ingredientQuantity)) * 1.0f / nbInitial) * nbSelected;
+                if (ingredientQtyMap.containsKey(getIngredient.getString("Name"))){
+                    float quantity = ingredientQtyMap.get(getIngredient.getString("Name")).first;
+                    String unit = ingredientQtyMap.get(getIngredient.getString("Name")).second;
+                    ingredientQtyMap.put(getIngredient.getString("Name"), new Pair<>(quantity + ingredientQuantityOp, unit));
+                }
+                else{
+                    ingredientQtyMap.put(getIngredient.getString("Name"), new Pair<>(ingredientQuantityOp, getIngredient.getString("Unit")));
+                }
+                --ingredientNbr;
+            }
+        }
+    }
+
+    private void getElementAdded() throws JSONException {
+        JSONArray elementsObj = ReadDataJson.getElementsAdded(getExternalFilesDir(null).toString());
+        int nbElements = elementsObj.length();
+        while (nbElements != 0){
+            JSONObject elementsIndI = elementsObj.getJSONObject(nbElements-1);
+            elementAddedList.add(elementsIndI.getString("Name") + " " + elementsIndI.getString("Quantity") + " " + elementsIndI.getString("Unit"));
+            --nbElements;
+        }
+    }
+
+    private void mapToList(){
+        for (Map.Entry<String, Pair<Float, String>> pair : ingredientQtyMap.entrySet()) {
+            adapterIngredientsList.add(pair.getKey() + " " + pair.getValue().first + " " + pair.getValue().second);
+        }
+    }
+
+    private void onBtnAddElmClick(){
+        btnAddingElm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final Dialog dialog = new Dialog(ShoppingIngredientList.this);
@@ -167,6 +208,11 @@ public class ShoppingIngredientList extends AppCompatActivity {
                 dialog.setCancelable(true);
                 dialog.setContentView(R.layout.popup_add_element);
                 dialog.show();
+
+                Spinner spinner = dialog.findViewById(R.id.spinElement);
+                ArrayAdapter<CharSequence> adapterSpinner = ArrayAdapter.createFromResource(dialog.getContext(), R.array.unit, android.R.layout.simple_spinner_item);
+                adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapterSpinner);
 
                 Button btnAdd = dialog.findViewById(R.id.btnAddElement);
 
@@ -176,10 +222,10 @@ public class ShoppingIngredientList extends AppCompatActivity {
                         //Get information
                         EditText elementNameEt = (EditText) dialog.findViewById(R.id.elementName2);
                         EditText elementQtyEt = (EditText) dialog.findViewById(R.id.elementQty2);
-                        EditText elementUnitEt = (EditText) dialog.findViewById(R.id.elementUnit2);
+                        Spinner elementUnitEt = (Spinner) dialog.findViewById(R.id.spinElement);
 
                         //Save information into a list
-                        elementAddedList.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString() + " " + elementUnitEt.getText().toString());
+                        elementAddedList.add(elementNameEt.getText().toString() + " " + elementQtyEt.getText().toString() + " " + elementUnitEt.getSelectedItem().toString());
 
                         //Display the information
                         adapterElementAdded.notifyDataSetChanged();
@@ -187,7 +233,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
 
                         //Save into JSON
                         try {
-                            WriteDataJson.saveNewElementAddedJSON(getExternalFilesDir(null).toString(), elementNameEt.getText().toString(), elementQtyEt.getText().toString(), elementUnitEt.getText().toString());
+                            WriteDataJson.saveNewElementAddedJSON(getExternalFilesDir(null).toString(), elementNameEt.getText().toString(), elementQtyEt.getText().toString(), elementUnitEt.getSelectedItem().toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
@@ -207,7 +253,7 @@ public class ShoppingIngredientList extends AppCompatActivity {
         try {
             WriteDataJson.saveIngredientSelectedJSON(ingredientSelected, getExternalFilesDir(null).toString());
             WriteDataJson.saveElementSelectedJSON(elementSelected, getExternalFilesDir(null).toString());
-            if(!ingredientQtyVector.isEmpty()){ingredientQtyVector.clear();}
+            if(!adapterIngredientsList.isEmpty()){adapterIngredientsList.clear();}
             if(!ingredientSelected.isEmpty()){ingredientSelected.clear();}
             if(!elementSelected.isEmpty()){elementSelected.clear();}
             if(!elementAddedList.isEmpty()){elementAddedList.clear();}
@@ -215,52 +261,6 @@ public class ShoppingIngredientList extends AppCompatActivity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void getRecipesIngredients() throws JSONException {
-        JSONObject allRecipes = ReadDataJson.getRecipesInput(getExternalFilesDir(null).toString()); //Get "Recipes input" from JSON
-        Map<String, String> recipesNbSelected = ReadDataJson.getRecipeNbSelected(getExternalFilesDir(null).toString()); //Get the recipes + number selected by the user
-        for (Map.Entry<String, String> pair : recipesNbSelected.entrySet()) {
-            String recipeName = pair.getKey();                            //Get the recipe selected by the user
-            JSONObject recipeObj = allRecipes.getJSONObject(recipeName);  //Search for the recipe in JSON file
-            int nbSelected = Integer.parseInt(pair.getValue());                //Get the selected nb of people for the recipe
-            int nbInitial = Integer.parseInt(recipeObj.getString("Nb"));  //Get the initial nb of people for the recipe
-
-            // Get the correct quantity + ingredients' name + unit
-            JSONArray recipeIngredientsObj = recipeObj.getJSONArray("Ingredients");           //Get the ingredients
-            int ingredientNbr = recipeIngredientsObj.length();
-            while (ingredientNbr != 0){
-                JSONObject getIngredient = recipeIngredientsObj.getJSONObject(ingredientNbr-1);   //Get the i ingredient
-                String ingredientQuantity = getIngredient.getString("Quantity");
-                float ingredientQuantityOp = ((Integer.valueOf(ingredientQuantity)) * 1.0f / nbInitial) * nbSelected;
-                //ingredientQtyVector.add(getIngredient.getString("Name") + " " + ingredientQuantityOp + " " + getIngredient.getString("Unit"));
-                if (ingredientQtyMap.containsKey(getIngredient.getString("Name"))){
-                    float quantity = ingredientQtyMap.get(getIngredient.getString("Name")).first;
-                    String unit = ingredientQtyMap.get(getIngredient.getString("Name")).second;
-                    ingredientQtyMap.put(getIngredient.getString("Name"), new Pair<>(quantity + ingredientQuantityOp, unit));
-                }
-                else{
-                    ingredientQtyMap.put(getIngredient.getString("Name"), new Pair<>(ingredientQuantityOp, getIngredient.getString("Unit")));
-                }
-                --ingredientNbr;
-            }
-        }
-    }
-
-    private void mapToList(){
-        for (Map.Entry<String, Pair<Float, String>> pair : ingredientQtyMap.entrySet()) {
-            ingredientQtyVector.add(pair.getKey() + " " + pair.getValue().first + " " + pair.getValue().second);
-        }
-    }
-
-    private void addPreviousElementAddedToList() throws JSONException {
-        JSONArray elementsObj = ReadDataJson.getElementsAdded(getExternalFilesDir(null).toString());
-        int nbElements = elementsObj.length();
-        while (nbElements != 0){
-            JSONObject elementsIndI = elementsObj.getJSONObject(nbElements-1);
-            elementAddedList.add(elementsIndI.getString("Name") + " " + elementsIndI.getString("Quantity") + " " + elementsIndI.getString("Unit"));
-            --nbElements;
         }
     }
 

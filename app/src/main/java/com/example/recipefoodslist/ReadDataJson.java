@@ -19,18 +19,20 @@ import java.util.Vector;
 
 public class ReadDataJson {
 
+    static String nameFile = "/recipesData.json";
+
     public static JSONObject getAllJsonObj(String path){
         String data ="";
         JSONObject jsonObject = new JSONObject();
 
         try{
-            File f = new File(path + "/newTestFile.json");
+            File f = new File(path + nameFile);
 
             if(!(f.exists())){
 
             }
             else{
-                InputStream inputStream = new FileInputStream(path + "/newTestFile.json");
+                InputStream inputStream = new FileInputStream(path + nameFile);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
 

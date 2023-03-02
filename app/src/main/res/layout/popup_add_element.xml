@@ -92,14 +92,12 @@
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/elementUnit2"
+            <Spinner
+                android:id="@+id/spinElement"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:backgroundTint="#FFFF5722"
-                android:ems="10"
-                android:inputType="textPersonName" />
+                android:layout_weight="2" />
+
         </LinearLayout>
 
         <Button
