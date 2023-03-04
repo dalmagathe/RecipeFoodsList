@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RecipeFoodsList</string>
+    <string name="app_name">Recipes</string>
 
     <string-array name="unit">
         <item></item>
