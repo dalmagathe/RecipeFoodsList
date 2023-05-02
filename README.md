@@ -16,11 +16,11 @@ Main page:
 
 Adding a recipe:
 
-<img align="center" alt="Add recipe page" width="550px" src="https://user-images.githubusercontent.com/88153083/235480947-d1e3d247-cbd6-4958-af3b-82f07587a3fc.png"/>
+<img align="center" alt="Add recipe page" width="550px" src="https://user-images.githubusercontent.com/88153083/235662950-34ea1be3-a645-458f-bfa8-1c27d306966f.png"/>
 
 Selecting recipes:
 
-<img align="center" alt="Select recipe page" src="https://user-images.githubusercontent.com/88153083/235481085-ad915cba-a194-4606-a8e2-fe63f94b3013.png"/> 
+<img align="center" alt="Select recipe page" src="https://user-images.githubusercontent.com/88153083/235663316-9296c251-9765-47de-a5d7-7bb6cca128cf.png"/> 
 
 Adding elements not included in the recipe:
-<img align="center" alt="Add element page" src="https://user-images.githubusercontent.com/88153083/235481182-ca915995-fae0-4c3d-abc4-7a1f214a7043.png"/>
+<img align="center" alt="Add element page" src="https://user-images.githubusercontent.com/88153083/235663542-e45476eb-e921-47fb-b828-31f7adb85777.png"/>
