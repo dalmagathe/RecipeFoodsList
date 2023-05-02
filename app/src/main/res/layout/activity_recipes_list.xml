@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    tools:context=".RecipesList">
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Select the recipes for the week"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/allRecipeListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="8"
+        android:choiceMode="multipleChoice"
+        android:divider="#FFFEB90A"
+        android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/openNbSelection"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_weight="1"
+        android:backgroundTint="#D89E0A"
+        android:text="Select Nb" />
+
+</LinearLayout>

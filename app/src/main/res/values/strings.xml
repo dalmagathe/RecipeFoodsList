@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Recipes</string>
+
+    <string-array name="unit">
+        <item></item>
+        <item>gr</item>
+        <item>ml</item>
+        <item>pcs</item>
+        <item>Ø</item>
+    </string-array>
+</resources>
